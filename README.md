@@ -364,3 +364,33 @@ Note that now you are accessing the image with the `:ro` flag, which means it is
 However, if you want to further modify the image, you have to change it into `:rw`.
 
 ## 5. Quickly access my singularity image and conda environment ##
+
+To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer and upload it to HPC `/scratch/ac8888/pytorch-example/`. The file should be something like [this]((https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash)).
+
+(Remember: replace `<NetID>` with your own.)
+
+```
+#!/bin/bash
+
+args=''
+for i in "$@"; do 
+  i="${i//\\/\\\\}"
+  args="${args} \"${i//\"/\\\"}\""
+done
+
+if [ "${args}" == "" ]; then args="/bin/bash"; fi
+
+if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
+
+singularity \
+    exec \
+    --nv --overlay /scratch/<NetID>/pytorch-example/my_pytorch.ext3:ro \
+    /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif \
+    /bin/bash -c "
+unset -f which
+source /opt/apps/lmod/lmod/init/sh
+source /ext3/env.sh
+conda activate pytorch-ac8888
+${args}
+"
+```
