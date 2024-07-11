@@ -11,6 +11,11 @@ If you are a computer wizard or witch, this might be too easy for you. If you ar
 
 Despite my approaches may not be the most efficient or correct way to do things, hope this tutorial can give you a good start of using HPC and boost your productivity!
 
+### Prerequested knowledge ###
+- Basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`). This is a neccesity as this will be the primary way you interact with HPC. But you can quickly learn them starting from [here](https://www.codecademy.com/article/command-line-commands).
+- Git/GitHub (not a neccesity but will be very helpful)
+- Conda (not a neccesity but will be very helpful)
+
 ## 1. What is HPC? Should I use it? ##
 
 HPC is a system that you can request the computational resources (CPUs, GPUs, RAM, nodes) for each computational job, and you can request many sets in parallel.
