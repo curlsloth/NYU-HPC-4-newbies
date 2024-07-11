@@ -1,4 +1,4 @@
-# NYU High Performance Computing (HPC) 4 newbies 🍼 #
+# NYU High Performance Computing (HPC) for Newbies 🍼 #
 
 Last update: July 10, 2024
 
@@ -33,11 +33,45 @@ So, I ended up requesting 2000 jobs, each job process 100 files. As a result, it
 
 While you can cook all kinds of cusines (scripts) in your kitchen at home (laptop), but you only have access to a few stoves (CPUs), you can only cook a small portion (RAM) at a time, and you cannot cook too many cusines in parallel. 
 
-Using an HPC is like walking into a restaurant. A host (login node) will greet you upfront. Despite that he is very capable to serve you whatever you want, the host is also busy with greeting other customers. Therefore, your first step is to tell the host to assign a dedicated waiter (job node) for you.
+Using an HPC is like walking into a restaurant. A host (login node) will greet you upfront. 
 
-You can use this line: `srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash`
+If you are using Mac, open your terminal application ([default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.) or [iTerm](https://iterm2.com/)), connect to [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into the Greene by executing this line (keyin and then press enter):
 
-It means that you request the node to have 1 CPU, 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
+```
+ssh <NetID>@gw.hpc.nyu.edu
+```
+(Replace `<NetID>` with your own. In my case, that will be `ssh ac8888@gw.hpc.nyu.edu`)
 
-Now you have a waiter. Although the waiter can cook a meal for you, the most efficient approach should be asking the waiter to recruit a few cooks in back in the kitchen for you to cook whatever you want.
+It will then ask you to keyin your password. 
+
+If everything is correct, the login node will look something like this 
+```
+[ac8888@log-3 ~]$
+```
+
+Despite that the host of the restaurant is very capable to serve you whatever you want, the host is also busy with greeting other customers. Therefore, your first step is to tell the host to assign a dedicated waiter (job node) for you.
+
+Then execute this line: `srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash`, it means that you request the node to have 1 CPU, 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
+
+Once you execute that line, you shall wait for a short time, and then will see the terminal displaying this:
+
+```
+[ac8888@log-3 ~]$ srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash
+srun: job 48347520 queued and waiting for resources
+srun: job 48347520 has been allocated resources
+[ac8888@cm015 ~]$
+```
+
+Now you have a waiter node (`cm015`) ready to serve you. 
+
+You can ask the waiter to cook a meal for you. For example, execute (type and press enter) this `python`:
+```
+[ac8888@cm015 ~]$ python
+Python 3.9.16 (main, Jan  4 2024, 00:00:00)
+[GCC 11.3.1 20221121 (Red Hat 11.3.1-4)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+```
+
+Although the waiter can cook a meal for you, the most efficient approach should be asking the waiter to recruit a few cooks in back in the kitchen for you to cook whatever you want.
 
