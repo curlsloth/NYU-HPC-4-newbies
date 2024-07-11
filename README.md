@@ -11,9 +11,13 @@ If you are a computer wizard or witch, this might be too easy for you. If you ar
 
 Despite my approaches may not be the most efficient or correct way to do things, hope this tutorial can give you a good start of using HPC and boost your productivity!
 
-## 1. What is HPC and do I need to use it? ##
+## 1. What is HPC? Should I use it? ##
 
 HPC is a system that you can request the computational resources (CPUs, GPUs, RAM, nodes) for each computational job, and you can request many sets in parallel.
+
+### If your laptop is your kitchen at home, HPC is a restaurant. ####
+
+While you can cook all kinds of cusines (scripts) in your kitchen at home (laptop), but you only have access to a few stoves (CPUs), you can only cook a small portion (RAM) at a time, and you cannot cook too many cusines in parallel. 
 
 ### You probably want to use HPC if ###
 - insufficient CPUs or RAM in your local machine,
@@ -28,12 +32,8 @@ HPC is a system that you can request the computational resources (CPUs, GPUs, RA
 I once needed to analyze 200k of audio files, and the process on each file would take approximately 15 seconds. In total, it will take 34.7 days to run through all the files, if my poor laptop doesn’t burn 🔥! 
 So, I ended up requesting 2000 jobs, each job process 100 files. As a result, it took less than 2 hours to complete all the jobs, including the queue time ⚡️! 
 
-## 2. How to conceptualize and understand HPC? ##
-### If your laptop is your kitchen at home, HPC is a restaurant. ###
-
-While you can cook all kinds of cusines (scripts) in your kitchen at home (laptop), but you only have access to a few stoves (CPUs), you can only cook a small portion (RAM) at a time, and you cannot cook too many cusines in parallel. 
-
-Using an HPC is like walking into a restaurant. A host (login node) will greet you upfront. 
+## 2. Your first step of using HPC! ##
+### 2-1. What is HPC? ###
 
 If you are using Mac, open your terminal application ([default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.) or [iTerm](https://iterm2.com/)), connect to [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into the Greene by executing this line (keyin and then press enter):
 
@@ -49,7 +49,7 @@ If everything is correct, the login node will look something like this
 [ac8888@log-3 ~]$
 ```
 
-Despite that the host of the restaurant is very capable to serve you whatever you want, the host is also busy with greeting other customers. Please do NOT run CPU heavy jobs on login nodes! Therefore, your first step is to tell the host to assign a dedicated waiter (job node) for you.
+Log into an HPC is like walking into a restaurant. A host (login node) will greet you upfront. Despite that the host of the restaurant is very capable to serve you whatever you want, the host is also busy with greeting other customers. Please do NOT run CPU heavy jobs on login nodes! Therefore, your first step is to tell the host to assign a dedicated waiter (job node) for you.
 
 Then execute this line: `srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash`, it means that you request the node to have 1 CPU and 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
 
@@ -81,7 +81,7 @@ Congrats! Now you know the core workflow of using HPC. The following sections ar
 
 ## 3. HPC data management ##
 
-## 3-1. Greene storage options ##
+### 3-1. Greene storage options ###
 
 There are a few root directories on Greene, and each of them have different specifications for different usage purposes.
 
@@ -107,20 +107,55 @@ Space        Variable      /Flushed?     Space / Files      Space(%) / Files(%)
 /vast        $VAST         NO/YES        2TB/5.0M           1.38TB(69.0%)/3454787(69%)
 ```
 
-## 3-2. Data transfer ##
+#### Organizing and archieving files ####
 
-According to NYU HPC's [website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers), there are number of ways to transfer data to HPC. But I am only introduce 2 ways that I find them useful.
+Typically you want to put your project folder under `/scratch` or `/vast`, and the conda environment and singularity (will explain later) and other personal login files under `/home`. As the data not accessed for 60 under `/scratch` and `/vast` will be wiped out, I recommend compress the project folder and save under `/archive` once in a while.
 
-### Use Globus to transfer big data files ###
+Run this line to compress the folder and save it under `/archive`:
+```
+tar -czvf /archive/<NetID>/myProject_20240711.tgz /scratch/<NetID>/myProjectFolder
+```
+Run this line to uncompress the .tgz file and put it back to `scratch`:
+```
+tar -xvf /archive/<NetID>/myProject_20240711.tgz /scratch/<NetID>/
+```
+You will see `/scratch/<NetID>/myProjectFolder` is back.
+
+Here is an [instruction](https://support.apple.com/guide/terminal/compress-and-uncompress-file-archives-apdc52250ee-4659-4751-9a3a-8b7988150530/mac) on how to tar archieve a folder using Mac/Linux.
+
+### 3-2. Data transfer ###
+
+According to NYU HPC's [website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers), there are number of ways to transfer data to HPC. But I am only introduce the two ways that I recommend.
+
+#### Use Globus to transfer big data files ####
 
 Globus has a browser-based user interface to transfer the files. It is very intuitive to use and features automatic error monitoring. See [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers/globus) for the instruction. 
 
-However, Globus can be really slow if you are transfer a large quantitive of files. In that case, you can simply compress the entire folder on the local machine as one tar file , upload that one tar file using globus, and uncompress on HPC. Here is the [instruction](https://support.apple.com/guide/terminal/compress-and-uncompress-file-archives-apdc52250ee-4659-4751-9a3a-8b7988150530/mac) for Mac/Linux.
+However, Globus can be really slow if you are transfer a large quantitive of files. In that case, you can simply compress the entire folder on the local machine as one tar file , upload that one tar file using globus, and uncompress on HPC. 
 
-### Use GitHub to transfer scripts (and a small number of small-sized data files) ###
+#### Use GitHub to transfer scripts (and a small number of small-sized data files) ####
 
 Synchronizing often changed files (i.e., script files) manually using Globus can be error-prone. Also, transferring a large number of small files can be very slow via Globus. Therefore, I recommend synchronizing your scripts (and maybe a small number of small-sized data files) using GitHub. 
 
 Yes, you can clone a GitHub repository to HPC the same way as you do on your local machine ([instruction](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)). Just remember to [`.gitignore`](https://www.w3schools.com/git/git_ignore.asp) your data folder and anything you don't want to share. 
 
 > **Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure), which is an intuitive way to separate your scripts, data and many other files. (You can manually do it if you don't want to run another script for it.) **The future you will thank you!**
+ 
+
+## 4. Set up replicable programming environment using Singularity and Conda ##
+
+Probably the most complicated step to use HPC is to replicate the environment and install all the related packages on it. But this is not an issue if you use Singularity and Miniconda to setup the environment. 
+
+### 4-1. Use Conda to manage environment ###
+
+Conda is a powerful tool for package and environment management. You can create multiple environments with different versions of packages and dependencies which won't interfere with each other. Within each environment, everytime you install a new package, its dependency with other existing ones will be checked and updated. This is especially useful if you work on multiple projects using different sets of tools, and if you want to install new packages but worrying that modification will screw up the existing environment.
+
+To keep this tutorial focused on HPC, I am assuming that you are familiar Conda and have been activily using on your local computer. **If not, start using Conda today! See [here](https://conda.org/learn/faq/#:~:text=It%20provides%20a%20unified%20interface,compatibility%20issues%20across%20different%20platforms.) for why you should use it, and see [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions.**
+
+### 4-2. What is Singularity and why should I use it ###
+
+[Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html) is a container platform specifically designed for HPC, and it has become widely used in many HPC systems.
+
+Without Singularity, you don't really have a good place to put your conda environment files. The `/home` space can only contain a limited number of files, which is barely enough for a conda environment. Despite `/scratch` and `/vast` can contain many files, the files in these two places could be wiped out every 60 days. You don't want to reset your conda environment again and again!
+
+Singularity can perfectly resolve this issue. Singularity is a containor. For the HPC file system, it is recognized as one single file. But within this containor, you can put as many files as you want, up to it predefined space.
