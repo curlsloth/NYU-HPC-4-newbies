@@ -298,6 +298,7 @@ pip3 install jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-imag
 However, I recommend using conda to ensure compatibility among packages. You can export a `.yaml` file listing all the packages and versions you use on your local computer, upload it the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 **Step 9: Verify your setup**
+
 You can see the available space left on your image with the following commands:
 ```
 find /ext3 | wc -l
