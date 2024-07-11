@@ -480,9 +480,7 @@ module purge                          # unload all currently loaded modules in t
 ```
 Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/sbatch_pytorch-ac8888.s) and upload it to `/scratch/ac8888/pytorch-example/`.
 
-You can modify the requested resources as you want. But the more you requested, the longer queue time will be.
-
-Also, there's a limit of resource you can request, see [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
+You can modify the requested resources as you want. But the more you requested, the longer queue time will be. Also, there's a limit of resource you can request, see [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
 
 Unless your job really needs GPU and you are very experienced with it, I don't recommend requesting for any GPUs (at least not on NYU HPC) for two reasons:
 1. **The queue time will be very long.** GPU is rare and everyone wants to use it. In my experience, the fast computational speed of GPU cannot make up the extra queue time for requesting any GPU. It may be faster by just requesting CPUs.
