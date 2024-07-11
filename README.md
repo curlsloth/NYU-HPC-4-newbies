@@ -76,12 +76,16 @@ Now you can use Python on HPC the same way as you do on your local machine.
 
 Congrats! Now you know the core workflow of using HPC. The following sections are all about how to make the process much easier and automatic.
 
+**Note that as Greene is Linux based, the command you used will need to be Linux based too.**
+
+
 ## 3. HPC data management ##
 
-## Greene storage options ##
+## 3-1. Greene storage options ##
 
+There are a few root directories on Greene, and each of them have different specifications for different usage purposes.
 
-|Storage  |Disk Space / Number of Files        	  |Backed Up / Flushed	               |Recommendation                                                                                                                     |
+|Storage  |Disk Space / Number of Files        	  |Backed Up / Flushed	               |Recommendation                                                                                                                 |
 |---------|-----------------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
 |/home	  |50 GB / 30 K	                      |YES / NO                            |Store your singularity and other frequently used keys or important results.                                                        |
 |/archive |5 TB / 1 M	        	              |NO / Files not accessed for 60 days |Long-term storage. Archive your projects as .tar or .zip or unused singularity files. Only for infrequent access                   |
@@ -102,3 +106,21 @@ Space        Variable      /Flushed?     Space / Files      Space(%) / Files(%)
 /archive     $ARCHIVE      Yes/No        2.0TB/20.0K        56.33GB(2.75%)/233(1.16%)
 /vast        $VAST         NO/YES        2TB/5.0M           1.38TB(69.0%)/3454787(69%)
 ```
+
+## 3-2. Data transfer ##
+
+According to NYU HPC's [website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers), there are number of ways to transfer data to HPC. But I am only introduce 2 ways that I find them useful.
+
+### Use Globus to transfer big data files ###
+
+Globus has a browser-based user interface to transfer the files. It is very intuitive to use and features automatic error monitoring. See [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers/globus) for the instruction. 
+
+However, Globus can be really slow if you are transfer a large quantitive of files. In that case, you can simply compress the entire folder on the local machine as one tar file , upload that one tar file using globus, and uncompress on HPC. Here is the [instruction](https://support.apple.com/guide/terminal/compress-and-uncompress-file-archives-apdc52250ee-4659-4751-9a3a-8b7988150530/mac) for Mac/Linux.
+
+### Use GitHub to transfer scripts (and a small number of small-sized data files) ###
+
+Synchronizing often changed files (i.e., script files) manually using Globus can be error-prone. Also, transferring a large number of small files can be very slow via Globus. Therefore, I recommend synchronizing your scripts (and maybe a small number of small-sized data files) using GitHub. 
+
+Yes, you can clone a GitHub repository to HPC the same way as you do on your local machine ([instruction](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)). Just remember to [`.gitignore`](https://www.w3schools.com/git/git_ignore.asp) your data folder and anything you don't want to share. 
+
+***Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure), which is an intuitive way to separate your scripts, data and many other files. (You can manually do it if you don't want to run another script for it.) **The future you will thank you!**
