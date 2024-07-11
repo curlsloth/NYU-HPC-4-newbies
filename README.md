@@ -365,7 +365,7 @@ However, if you want to further modify the image, you have to change it into `:r
 
 ## 5. Quickly access my singularity image and conda environment ##
 
-To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer and upload it to HPC `/scratch/ac8888/pytorch-example/`. The file should be something like [this]((https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash)).
+To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer and upload it to HPC `/scratch/ac8888/pytorch-example/`. The file should be something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
 
 (Remember: replace `<NetID>` with your own.)
 
