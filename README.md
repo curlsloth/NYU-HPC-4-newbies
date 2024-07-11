@@ -478,7 +478,7 @@ module purge                          # unload all currently loaded modules in t
 
 /scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py $SLURM_ARRAY_TASK_ID
 ```
-Save it as `sbatch_pytorch-ac8888.s` and upload it to `/scratch/ac8888/pytorch-example/`.
+Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/sbatch_pytorch-ac8888.s) and upload it to `/scratch/ac8888/pytorch-example/`.
 
 You can modify the requested resources as you want. But the more you requested, the longer queue time will be.
 
