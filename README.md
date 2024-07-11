@@ -7,7 +7,7 @@ This is a tutorial for computer muggles who wants to use NYU's HPC, **"Greene"**
 
 Eventhough we all know that HPC can speed up our research, I found that most of people don't want to use it. I guess it is because they worry that they will spend more time on learning HPC then waiting the computation completed on their laptops. This tutorial is designed to mitigate this issue. It will help you set up a reliable and replicable HPC environment within an afternoon, even if you know nothing about computer science.
 
-If you are a computer wizard or witch, this might be too easy for you. If you are interested in knowing all the functions and details, this is not for you. This tutorial is a short summary of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), including the topics and tips I personally find useful. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC system may have different OS, this tutorial may not be applied to other HPCs.
+This tutorial is a short summary of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrating my own tips. If you are a computer wizard or witch, this might be too easy for you. If you are interested in knowing all the functions and details, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC system may have different OS, this tutorial may not be applied to other HPCs.
 
 Despite my approaches may not be the most efficient or correct way to do things, hope this tutorial can give you a good start of using HPC and boost your productivity!
 
@@ -293,6 +293,8 @@ source /ext3/env.sh
 
 After it is running, you’ll be redirected to a compute node. From there, run singularity to setup on conda environment, same as you were doing on login node.
 
+**Option 1: pip install (it works, but not recommended)**
+
 You can install PyTorch using `pip` as an example:
 ```
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
@@ -300,17 +302,49 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
 pip3 install jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-image Pillow
 ```
 
-However, I recommend using conda to ensure compatibility among packages. You can export a `.yaml` file listing all the packages and versions you use on your local computer, upload it the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+**Option 2: create a new conda env with specified packages (recommended)**
+
+*This is the option we use in the following tutorial.*
+
+I recommend using conda to ensure compatibility among packages. Execute this line: 
+
+```
+conda create -n pytorch-ac8888 pytorch jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-image Pillow
+```
+Where the `pytorch-ac8888` is the name of the conda environment. You can replace that with whatever you want.
+
+After it is done, you can activate your conda environment:
+
+```
+conda activate pytorch-ac8888
+```
+
+
+Why creating a conda environment within a image which is already dedicated for a project? It is because very likely you will need a couple of environments to do different analyses due to incompatibility among the packages you want to use, or you may want to duplicate your environment as a safe copy before upgrading any packages.
+
+**Option 3: recreate a conda env from `.yaml` file (may not alway work)**
+
+You can even export a `.yaml` file listing all the packages and versions you use on your local computer, upload it the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. 
+
+Use Globus to upload the '.yaml' [file](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/pytorch-ac8888_20240711.yaml) to `/scratch/ac8888/pytorch-example/`, and then run the following line:
+
+```
+conda env create -f environment.yml
+```
+
+However, this may not always work, as some packages installed on your local machine may be incompatible with HPC. In that case, you may want to loose some constrains on the package versions, take out some unnecessary packages.
+
+> Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) for more details on how to manage conda environment.
 
 #### Step 9: Verify your setup ####
 
 You can see the available space left on your image with the following commands:
 ```
 find /ext3 | wc -l
-# output: should be something like 45445
+# output: should be something like 222076
 
 du -sh  /ext3        
-# output should be something like 4.9G    /ext3
+# output should be something like 6.0G    /ext3
 ```
 Now, exit the Singularity container and then rename the overlay image. Typing 'exit' and hitting enter will exit the Singularity container if you are currently inside it. You can tell if you're in a Singularity container because your prompt will be different, such as showing the prompt 'Singularity>'
 ```
@@ -319,10 +353,10 @@ mv overlay-15GB-500K.ext3 my_pytorch.ext3
 ```
 Test your PyTorch Singularity Image
 ```
-singularity exec --overlay /scratch/<NetID>/pytorch-example/my_pytorch.ext3:ro /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash -c 'source /ext3/env.sh; python -c "import torch; print(torch.__file__); print(torch.__version__)"'
+singularity exec --overlay /scratch/<NetID>/pytorch-example/my_pytorch.ext3:ro /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash -c 'source /ext3/env.sh; conda activate pytorch-ac8888; python -c "import torch; print(torch.__file__); print(torch.__version__)"'
 
-#output: /ext3/miniconda3/lib/python3.8/site-packages/torch/__init__.py
-#output: 1.8.0+cu111
+#output: /ext3/miniconda3/envs/pytorch-ac8888/lib/python3.12/site-packages/torch/__init__.py
+#output: 2.3.1.post100
 ```
 
 Note that now you are accessing the image with the `:ro` flag, which means it is read only. It is recommended to use `:ro` when you are executing your script, so your script won't accidentally modify the packages.
