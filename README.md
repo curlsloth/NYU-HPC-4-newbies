@@ -493,7 +493,7 @@ Now you can execute the script by running this line:
 sbatch --array=0-99 /scratch/ac8888/pytorch-example/sbatch_pytorch-ac8888.s
 # output: Submitted batch job 48368654
 ```
-The job ID is job ID 48368654.
+The job ID is `48368654`.
 
 The `--array=0-99` means that there will be 100 copies of the script being executed, with input ranging from 0 to 99. Which is equivalent to running these lines individually:
 ```
