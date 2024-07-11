@@ -363,8 +363,9 @@ Note that now you are accessing the image with the `:ro` flag, which means it is
 
 However, if you want to further modify the image, you have to change it into `:rw`.
 
-## 5. Quick access using `.bash` ##
+## 5. Quick run a Python script using `.bash` ##
 
+### 5-1. Make a `.bash` script ###
 To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer named `run-pytorch-ac8888.bash` and upload it to HPC `/scratch/ac8888/pytorch-example/`. The file should look something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
 
 (Remember: replace `<NetID>` with your own.)
@@ -413,4 +414,141 @@ conda env list
 # #
 # base                     /ext3/miniconda3
 # pytorch-ac8888        *  /ext3/miniconda3/envs/pytorch-ac8888
+```
+### 5-2. Use `.bash` script to run a Python script ###
+
+Here is a simple python script `print_odd_even.py` for demo, which can be downloaded [here](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/print_odd_even.py):
+
+```
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import sys
+
+def print_odd_number(n):
+    print(str(n)+" is an odd number")
+    
+def print_even_number(n):
+    print(str(n)+" is an even number")
+
+if __name__ == "__main__":
+    # Check if the correct number of arguments are provided
+    if len(sys.argv) != 2:
+        print("Usage: python script.py arg1")
+        sys.exit(1)
+
+    # Extract command-line arguments
+    n = int(sys.argv[1])
+    
+    if n%2==0:
+        print_even_number(n)
+    else:
+        print_odd_number(n)
+    
+    sys.exit(0)
+```
+
+Now you can upload it to HPC `/scratch/ac8888/pytorch-example/`, and the run the line below:
+
+```
+/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 23
+# Output: 23 is an odd number
+```
+To break it down, `/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash` is the `.bash` command, `python` calls the python program, `/scratch/ac8888/pytorch-example/print_odd_even.py` is the .py script we are executing, and `23` is the numberical input of the function as `n`. You can replace `23` with any other integers.
+
+Note that the `sys.argv[0]` is the script `/scratch/ac8888/pytorch-example/print_odd_even.py`, and the `sys.argv[1]` is the input `1`. The `sys.argv[_]` input will be automatically read as a string, so your numerical input will need to be converted into number by using `int()`.
+
+## 6. Run the same script in parallel ##
+
+One of the biggest advantage of using HPC is that you can run the same scripts in parallel. It can be easily achieved by using SLURM batch job:
+
+```
+#!/bin/bash
+
+#SBATCH --job-name=testrun
+#SBATCH --nodes=1                     # Request 1 compute node
+#SBATCH --cpus-per-task=1             # Request 1 CPU
+#SBATCH --mem=2GB                     # Request 2GB of RAM
+#SBATCH --time=00:10:00               # Request 10 mins
+#SBATCH --output=/scratch/ac8888/pytorch-example/slurm_output/out_%A_%a.out  # The output will be saved here. %A will be replaced by the slurm job ID, and %a will be replaced by the SLURM_ARRAY_TASK_ID
+#SBATCH --mail-user=ac8888@nyu.edu    # Email address
+#SBATCH --mail-type=END               # Send an email when the job end
+
+module purge                          # unload all currently loaded modules in the environment
+
+/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py $SLURM_ARRAY_TASK_ID
+```
+Save it as `sbatch_pytorch-ac8888.s` and upload it to `/scratch/ac8888/pytorch-example/`.
+
+You can modify the requested resources as you want. But the more you requested, the longer queue time will be.
+
+Also, there's a limit of resource you can request, see [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
+
+Unless your job really needs GPU and you are very experienced with it, I don't recommend requesting for any GPUs (at least not on NYU HPC) for two reasons:
+1. **The queue time will be very long.** GPU is rare and everyone wants to use it. In my experience, the fast computational speed of GPU cannot make up the extra queue time for requesting any GPU. It may be faster by just requesting CPUs.
+2. **NYU HPC will kill the job with low GPU usage.** After a long queue your GPU job finally start running! However, if the GPU usage is much lower than what you requested, you job will be terminated. It may take too much time to trial-and-error on this aspect as you will waste more time in queue.
+
+As the script will save the output under `/scratch/ac8888/pytorch-example/slurm_output/`, you will need to create a folder by running `mkdir /scratch/ac8888/pytorch-example/slurm_output`
+
+Now you can execute the script by running this line:
+```
+sbatch --array=0-99 /scratch/ac8888/pytorch-example/sbatch_pytorch-ac8888.s
+# output: Submitted batch job 48368654
+```
+The job ID is job ID 48368654.
+
+The `--array=0-99` means that there will be 100 copies of the script being executed, with input ranging from 0 to 99. Which is equivalent to running these lines individually:
+```
+/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 0
+/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 1
+/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 2
+...
+/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 99
+```
+
+You can check the status of all your jobs using this line:
+```
+squeue -u ac8888
+# Output: 
+#             JOBID PARTITION     NAME     USER ST       TIME  NODES
+#   48368654_[0-99] short,cs,  testrun   ac8888 PD       0:00      1 
+```
+
+Some other useful SLURM commands that can help to get information about running and pending jobs are
+```
+# detailed information for a job:
+scontrol show jobid -dd <jobid>
+
+# show status of a currently running job
+# (see 'man sstat' for other available JOB STATUS FIELDS)
+sstat --format=TresUsageInMax%80,TresUsageInMaxNode%80 -j <JobID> --allsteps
+
+# get stats for completed jobs 
+# (see 'man sacct' for other JOB ACCOUNTING FIELDS)
+sacct -j <jobid> --format=JobID,JobName,MaxRSS,Elapsed
+
+# the same information for all jobs of a user:
+sacct -u <username> --format=JobID,JobName,MaxRSS,Elapsed
+```
+
+When the all the job is done, you will get an email titled something like this "Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]", where "ExitCode 0" means no error!
+
+You can list all the output file using `ls` command by executing this:
+```
+ls /scratch/ac8888/pytorch-example/slurm_output/
+# out_48368654_0.out   out_48368654_25.out  out_48368654_40.out  out_48368654_56.out  out_48368654_71.out  out_48368654_87.out
+# out_48368654_10.out  out_48368654_26.out  out_48368654_41.out  out_48368654_57.out  out_48368654_72.out  out_48368654_88.out
+# out_48368654_11.out  out_48368654_27.out  out_48368654_42.out  out_48368654_58.out  out_48368654_73.out  out_48368654_89.out
+# out_48368654_12.out  out_48368654_28.out  out_48368654_43.out  out_48368654_59.out  out_48368654_74.out  out_48368654_8.out
+# ...
+# (There shall be 100 files in total, with naming scheme out_[slurm job ID]_[SLURM_ARRAY_TASK_ID].out)
+```
+
+You can check a file by using `cat` command:
+```
+cat /scratch/ac8888/pytorch-example/slurm_output/out_48368654_0.out
+# Output: 0 is an even number
+
+cat /scratch/ac8888/pytorch-example/slurm_output/out_48368654_23.out
+# Output: 23 is an odd number
 ```
