@@ -363,9 +363,9 @@ Note that now you are accessing the image with the `:ro` flag, which means it is
 
 However, if you want to further modify the image, you have to change it into `:rw`.
 
-## 5. Quickly access my singularity image and conda environment ##
+## 5. Quick access using `.bash` ##
 
-To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer and upload it to HPC `/scratch/ac8888/pytorch-example/`. The file should be something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
+To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer named `run-pytorch-ac8888.bash` and upload it to HPC `/scratch/ac8888/pytorch-example/`. The file should look something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
 
 (Remember: replace `<NetID>` with your own.)
 
@@ -393,4 +393,24 @@ source /ext3/env.sh
 conda activate pytorch-ac8888
 ${args}
 "
+```
+
+To make this script executable, run this command
+```
+chmod 755  /scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash
+```
+
+Now you can access to the conda environment simply by running:
+```
+/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash
+```
+
+Check whether you are under the `pytorch-ac8888` environment, and the `*` sign indicate the currently activated environment:
+```
+conda env list
+## Output:
+# # conda environments:
+# #
+# base                     /ext3/miniconda3
+# pytorch-ac8888        *  /ext3/miniconda3/envs/pytorch-ac8888
 ```
