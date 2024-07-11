@@ -152,7 +152,7 @@ Conda is a powerful tool for package and environment management. You can create 
 
 To keep this tutorial focused on HPC, I am assuming that you are familiar Conda and have been activily using on your local computer. **If not, start using Conda today! See [here](https://conda.org/learn/faq/#:~:text=It%20provides%20a%20unified%20interface,compatibility%20issues%20across%20different%20platforms.) for why you should use it, and see [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions.**
 
-### 4-2. What is Singularity and why should I use it ###
+### 4-2. Use Singularity to contain Conda environment ###
 
 [Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html) is a container platform specifically designed for HPC, and it has become widely used in many HPC systems.
 
