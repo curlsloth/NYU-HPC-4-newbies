@@ -198,7 +198,7 @@ For Singularity image available on nyu HPC greene,  please check the singularity
 ```
 For the most recent supported versions, please check the [Tensorflow Website](https://www.tensorflow.org/install/pip). 
 
-**Step 4: Launch the appropriate Singularity container in read/write mode (with the :rw flag)**
+**Step 4: Launch the appropriate Singularity container in read/write mode (with the `:rw` flag)**
 ```
 singularity exec --overlay overlay-15GB-500K.ext3:rw /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
 ```
@@ -288,4 +288,37 @@ source /ext3/env.sh
 
 After it is running, you’ll be redirected to a compute node. From there, run singularity to setup on conda environment, same as you were doing on login node.
 
-I recommend exporting a `.yaml` file listing all the packages and versions you use on your local computer, uploading the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+You can install PyTorch using `pip` as an example:
+```
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+
+pip3 install jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-image Pillow
+```
+
+However, I recommend using conda to ensure compatibility among packages. You can export a `.yaml` file listing all the packages and versions you use on your local computer, upload it the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+
+**Step 9: Verify your setup**
+You can see the available space left on your image with the following commands:
+```
+find /ext3 | wc -l
+# output: should be something like 45445
+
+du -sh  /ext3        
+# output should be something like 4.9G    /ext3
+```
+Now, exit the Singularity container and then rename the overlay image. Typing 'exit' and hitting enter will exit the Singularity container if you are currently inside it. You can tell if you're in a Singularity container because your prompt will be different, such as showing the prompt 'Singularity>'
+```
+exit
+mv overlay-15GB-500K.ext3 my_pytorch.ext3
+```
+Test your PyTorch Singularity Image
+```
+singularity exec --overlay /scratch/<NetID>/pytorch-example/my_pytorch.ext3:ro /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash -c 'source /ext3/env.sh; python -c "import torch; print(torch.__file__); print(torch.__version__)"'
+
+#output: /ext3/miniconda3/lib/python3.8/site-packages/torch/__init__.py
+#output: 1.8.0+cu111
+```
+
+Note that now you are accessing the image with the `:ro` flag, which means it is read only. It is recommended to use `:ro` when you are executing your script, so your script won't accidentally modify the packages.
+
+However, if you want to further modify the image, you have to change it into `:rw`.
