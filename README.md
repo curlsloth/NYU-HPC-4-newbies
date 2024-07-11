@@ -154,8 +154,8 @@ To keep this tutorial focused on HPC, I am assuming that you are familiar Conda 
 
 ### 4-2. Use Singularity to contain Conda environment ###
 
-[Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html) is a container platform specifically designed for HPC, and it has become widely used in many HPC systems.
+[Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html) is a container platform specifically designed for HPC, and it has become widely used in many HPC systems and has become a standard.
 
-Without Singularity, you don't really have a good place to put your conda environment files. The `/home` space can only contain a limited number of files, which is barely enough for a conda environment. Despite `/scratch` and `/vast` can contain many files, the files in these two places could be wiped out every 60 days. You don't want to reset your conda environment again and again!
+Without Singularity, you don't really have a good place to put your conda environment file in HPC. The `/home` space can only contain a limited number of files, which is barely enough for a conda environment. Despite `/scratch` and `/vast` can contain many files, the files in these two places could be wiped out every 60 days. You don't want to reset your conda environment again and again! 
 
-Singularity can perfectly resolve this issue. Singularity is a containor. For the HPC file system, it is recognized as one single file. But within this containor, you can put as many files as you want, up to it predefined space.
+**Singularity acts like a containor.** For the HPC file system, it is recognized as one single file. But within this containor, you can put as many files as you want, up to it predefined space. Therefore, you can put your Singularity container under `/home` without worrying it exceeding the limit.
