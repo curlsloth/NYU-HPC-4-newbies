@@ -76,7 +76,7 @@ Now you can use Python on HPC the same way as you do on your local machine.
 
 Congrats! Now you know the core workflow of using HPC. The following sections are all about how to make the process much easier and automatic.
 
-**Note that as Greene is Linux based, the command you used will need to be Linux based too.**
+> Note that as Greene is Linux based, the command you used will need to be Linux based too.
 
 
 ## 3. HPC data management ##
@@ -123,4 +123,4 @@ Synchronizing often changed files (i.e., script files) manually using Globus can
 
 Yes, you can clone a GitHub repository to HPC the same way as you do on your local machine ([instruction](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)). Just remember to [`.gitignore`](https://www.w3schools.com/git/git_ignore.asp) your data folder and anything you don't want to share. 
 
-***Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure), which is an intuitive way to separate your scripts, data and many other files. (You can manually do it if you don't want to run another script for it.) **The future you will thank you!**
+> **Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure), which is an intuitive way to separate your scripts, data and many other files. (You can manually do it if you don't want to run another script for it.) **The future you will thank you!**
