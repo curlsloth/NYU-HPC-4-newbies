@@ -49,7 +49,7 @@ If everything is correct, the login node will look something like this
 [ac8888@log-3 ~]$
 ```
 
-Log into an HPC is like walking into a restaurant. A host (login node) will greet you upfront. Despite that the host of the restaurant is very capable to serve you whatever you want, the host is also busy with greeting other customers. Please do NOT run CPU heavy jobs on login nodes! Therefore, your first step is to tell the host to assign a dedicated waiter (job node) for you.
+Log into an HPC is like walking into a restaurant. A host (login node) will greet you upfront. Despite that the host of the restaurant is very capable to serve you whatever you want, the host is also busy with greeting other customers. Please do NOT run CPU heavy jobs on login nodes! Therefore, your first step is to tell the host to assign a dedicated waiter (compute node) for you.
 
 Then execute this line: `srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash`, it means that you request the node to have 1 CPU and 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
 
@@ -62,7 +62,7 @@ srun: job 48347520 has been allocated resources
 [ac8888@cm015 ~]$
 ```
 
-Now you have a waiter node (`cm015`) ready to serve you. 
+Now you have a waiter (compute node: `cm015`) ready to serve you. 
 
 You can ask the waiter to cook a meal for you. For example, execute (type and press enter) this `python`:
 ```
@@ -159,3 +159,133 @@ To keep this tutorial focused on HPC, I am assuming that you are familiar Conda 
 Without Singularity, you don't really have a good place to put your conda environment file in HPC. The `/home` space can only contain a limited number of files, which is barely enough for a conda environment. Despite `/scratch` and `/vast` can contain many files, the files in these two places could be wiped out every 60 days. You don't want to reset your conda environment again and again! 
 
 **Singularity acts like a containor.** For the HPC file system, it is recognized as one single file. But within this containor, you can put as many files as you want, up to it predefined space. Therefore, you can put your Singularity container under `/home` without worrying it exceeding the limit.
+
+### 4-3. Step-by-step guidance ###
+
+*This section is primarily modified from the [NYU HPC website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/singularity-with-miniconda).*
+
+**Step 1: Create a directory for the environment**
+```
+mkdir /scratch/<NetID>/pytorch-example
+cd /scratch/<NetID>/pytorch-example
+```
+
+**Step 2: Copy an appropriate gzipped overlay images from the overlay directory.** 
+
+You can browse available images to see available options.
+```
+ls /scratch/work/public/overlay-fs-ext3
+```
+
+In this example we use overlay-15GB-500K.ext3.gz as it has enough available storage for most conda environments. It has 15GB free space inside and is able to hold 500K files.
+You can use another size as needed. But since this overlay image cannot be modified later (or very complicated to do so), I would choose something slightly bigger than I need at the moment.
+```
+cp -rp /scratch/work/public/overlay-fs-ext3/overlay-15GB-500K.ext3.gz .
+gunzip overlay-15GB-500K.ext3.gz
+```
+
+**Step 3: Choose a corresponding Singularity image.** 
+
+It is about OS system you will be using to run your code. This can be changed everytime you access to the overlay file.
+
+For this example we will use the following image
+```
+/scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif
+```
+For Singularity image available on nyu HPC greene,  please check the singularity images folder 
+```
+/scratch/work/public/singularity/
+```
+For the most recent supported versions, please check the [Tensorflow Website](https://www.tensorflow.org/install/pip). 
+
+**Step 4: Launch the appropriate Singularity container in read/write mode (with the :rw flag)**
+```
+singularity exec --overlay overlay-15GB-500K.ext3:rw /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
+```
+The above starts a bash shell inside the referenced Singularity Container overlayed with the 15GB 500K you set up earlier. This creates the functional illusion of having a writable filesystem inside the typically read-only Singularity container.
+
+**Step 5: Inside the container, download and install miniconda to /ext3/miniconda3**
+
+```
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b -p /ext3/miniconda3
+```
+You can further run this line to remove the installation file
+```
+rm Miniconda3-latest-Linux-x86_64.sh
+```
+
+**Step 6: Create a wrapper script /ext3/env.sh using a text editor**
+
+Use `nano` to create and open the file by typing
+```
+nano /ext3/env.sh
+```
+
+The wrapper script will activate your conda environment, to which you will be installing your packages and dependencies. The script should contain the following:
+
+```
+#!/bin/bash
+
+unset -f which
+
+source /ext3/miniconda3/etc/profile.d/conda.sh
+export PATH=/ext3/miniconda3/bin:$PATH
+export PYTHONPATH=/ext3/miniconda3/bin:$PATH
+```
+
+To save the file, press Ctrl+O, then Enter to save the file, and Ctrl+X to exit.
+
+**Step 7: Activate an update your conda environment**
+
+Run this to activate the environment:
+```
+source /ext3/env.sh
+```
+
+Now that your environment is activated, you can update and install packages
+
+```
+conda update -n base conda -y
+conda clean --all --yes
+conda install pip -y
+conda install ipykernel -y # Note: ipykernel is required to run as a kernel in the Open OnDemand Jupyter Notebooks
+```
+To confirm that your environment is appropriately referencing your Miniconda installation, try out the following:
+```
+unset -f which
+which conda
+# output: /ext3/miniconda3/bin/conda
+
+which python
+# output: /ext3/miniconda3/bin/python
+
+python --version
+# output: Python 3.8.5
+
+which pip
+# output: /ext3/miniconda3/bin/pip
+
+exit
+# exit Singularity
+```
+
+**Step 8: Install packages**
+
+You may now install packages into the environment with either the pip install or conda install commands. 
+
+First, start an interactive job with adequate compute and memory resources to install packages. The login nodes restrict memory to 2GB per user, which may cause some large packages to crash.
+```
+srun --cpus-per-task=2 --mem=10GB --time=04:00:00 --pty /bin/bash
+
+# wait to be assigned a node
+
+singularity exec --overlay overlay-15GB-500K.ext3:rw /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
+
+source /ext3/env.sh
+# activate the environment
+```
+
+After it is running, you’ll be redirected to a compute node. From there, run singularity to setup on conda environment, same as you were doing on login node.
+
+I recommend exporting a `.yaml` file listing all the packages and versions you use on your local computer, uploading the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
