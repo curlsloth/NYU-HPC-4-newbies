@@ -164,13 +164,13 @@ Without Singularity, you don't really have a good place to put your conda enviro
 
 *This section is primarily modified from the [NYU HPC website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/singularity-with-miniconda).*
 
-**Step 1: Create a directory for the environment**
+#### Step 1: Create a directory for the environment ####
 ```
 mkdir /scratch/<NetID>/pytorch-example
 cd /scratch/<NetID>/pytorch-example
 ```
 
-**Step 2: Copy an appropriate gzipped overlay images from the overlay directory.** 
+#### Step 2: Copy an appropriate gzipped overlay images from the overlay directory.####
 
 You can browse available images to see available options.
 ```
@@ -184,7 +184,7 @@ cp -rp /scratch/work/public/overlay-fs-ext3/overlay-15GB-500K.ext3.gz .
 gunzip overlay-15GB-500K.ext3.gz
 ```
 
-**Step 3: Choose a corresponding Singularity image.** 
+#### Step 3: Choose a corresponding Singularity image ####
 
 It is about OS system you will be using to run your code. This can be changed everytime you access to the overlay file.
 
@@ -198,13 +198,13 @@ For Singularity image available on nyu HPC greene,  please check the singularity
 ```
 For the most recent supported versions, please check the [Tensorflow Website](https://www.tensorflow.org/install/pip). 
 
-**Step 4: Launch the appropriate Singularity container in read/write mode (with the `:rw` flag)**
+#### Step 4: Launch the appropriate Singularity container in read/write mode (with the `:rw` flag) ####
 ```
 singularity exec --overlay overlay-15GB-500K.ext3:rw /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
 ```
 The above starts a bash shell inside the referenced Singularity Container overlayed with the 15GB 500K you set up earlier. This creates the functional illusion of having a writable filesystem inside the typically read-only Singularity container.
 
-**Step 5: Inside the container, download and install miniconda to /ext3/miniconda3**
+#### Step 5: Inside the container, download and install miniconda to /ext3/miniconda3 ####
 
 ```
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -215,7 +215,7 @@ You can further run this line to remove the installation file
 rm Miniconda3-latest-Linux-x86_64.sh
 ```
 
-**Step 6: Create a wrapper script /ext3/env.sh using a text editor**
+#### Step 6: Create a wrapper script /ext3/env.sh using a text editor ####
 
 Use `nano` to create and open the file by typing
 ```
@@ -236,7 +236,7 @@ export PYTHONPATH=/ext3/miniconda3/bin:$PATH
 
 To save the file, press Ctrl+O, then Enter to save the file, and Ctrl+X to exit.
 
-**Step 7: Activate an update your conda environment**
+#### Step 7: Activate an update your conda environment ####
 
 Run this to activate the environment:
 ```
@@ -270,7 +270,7 @@ exit
 # exit Singularity
 ```
 
-**Step 8: Install packages**
+#### Step 8: Install packages ####
 
 You may now install packages into the environment with either the pip install or conda install commands. 
 
@@ -297,7 +297,7 @@ pip3 install jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-imag
 
 However, I recommend using conda to ensure compatibility among packages. You can export a `.yaml` file listing all the packages and versions you use on your local computer, upload it the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
-**Step 9: Verify your setup**
+#### Step 9: Verify your setup ####
 
 You can see the available space left on your image with the following commands:
 ```
@@ -323,3 +323,5 @@ singularity exec --overlay /scratch/<NetID>/pytorch-example/my_pytorch.ext3:ro /
 Note that now you are accessing the image with the `:ro` flag, which means it is read only. It is recommended to use `:ro` when you are executing your script, so your script won't accidentally modify the packages.
 
 However, if you want to further modify the image, you have to change it into `:rw`.
+
+## 5. Quickly access my singularity image and conda environment ##
