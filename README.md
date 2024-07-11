@@ -1,6 +1,6 @@
 # NYU High Performance Computing (HPC) for Newbies 🍼 #
 
-Last update: July 10, 2024
+Last update: July 11, 2024
 
 ## 0. Preface ##
 This is a tutorial for computer muggles who wants to use NYU's HPC, **"Greene"**, for their research, which is also a note for myself and my future students. 
@@ -49,9 +49,9 @@ If everything is correct, the login node will look something like this
 [ac8888@log-3 ~]$
 ```
 
-Despite that the host of the restaurant is very capable to serve you whatever you want, the host is also busy with greeting other customers. Therefore, your first step is to tell the host to assign a dedicated waiter (job node) for you.
+Despite that the host of the restaurant is very capable to serve you whatever you want, the host is also busy with greeting other customers. Please do NOT run CPU heavy jobs on login nodes! Therefore, your first step is to tell the host to assign a dedicated waiter (job node) for you.
 
-Then execute this line: `srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash`, it means that you request the node to have 1 CPU, 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
+Then execute this line: `srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash`, it means that you request the node to have 1 CPU and 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
 
 Once you execute that line, you shall wait for a short time, and then will see the terminal displaying this:
 
@@ -72,6 +72,33 @@ Python 3.9.16 (main, Jan  4 2024, 00:00:00)
 Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
+Now you can use Python on HPC the same way as you do on your local machine.
 
-Although the waiter can cook a meal for you, the most efficient approach should be asking the waiter to recruit a few cooks in back in the kitchen for you to cook whatever you want.
+Congrats! Now you know the core workflow of using HPC. The following sections are all about how to make the process much easier and automatic.
 
+## 3. HPC data management ##
+
+## Greene storage options ##
+
+
+|Storage  |Disk Space / Number of Files        	  |Backed Up / Flushed	               |Recommendation                                                                                                                     |
+|---------|-----------------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+|/home	  |50 GB / 30 K	                      |YES / NO                            |Store your singularity and other frequently used keys or important results.                                                        |
+|/archive |5 TB / 1 M	        	              |NO / Files not accessed for 60 days |Long-term storage. Archive your projects as .tar or .zip or unused singularity files. Only for infrequent access                   |
+|/scratch	|2 TB / 20 K	                      |YES / NO	                           |Put working projects here, especially with small number of big files (e.g., neuroimage)                                            |
+|/vast	  |2 TB / 5 M	                        |NO / Files not accessed for 60 days |Put working projects here, especially the project involving many small files with high I/O workflows (e.g., audio or image files)  |
+
+You can execute `myquota` command to see the current usage of your storages.
+```
+[ac8888@log-3 ~]$ myquota
+
+Hostname: log-3 at Thu Jul 11 07:39:37 AM EDT 2024
+
+Filesystem   Environment   Backed up?    Allocation         Current Usage
+Space        Variable      /Flushed?     Space / Files      Space(%) / Files(%)
+
+/home        $HOME         Yes/No        50.0GB/30.0K       46.75GB(93.50%)/13008(43.36%)
+/scratch     $SCRATCH      No/Yes        5.0TB/1.0M         0.97GB(0.02%)/11764(1.18%)
+/archive     $ARCHIVE      Yes/No        2.0TB/20.0K        56.33GB(2.75%)/233(1.16%)
+/vast        $VAST         NO/YES        2TB/5.0M           1.38TB(69.0%)/3454787(69%)
+```
