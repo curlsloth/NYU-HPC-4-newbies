@@ -173,19 +173,19 @@ Without Singularity, you don't really have a good place to put your conda enviro
 
 #### Step 1: Create a directory for the environment ####
 ```
-mkdir /scratch/<NetID>/pytorch-example
-cd /scratch/<NetID>/pytorch-example
+mkdir /scratch/<NetID>/pytorch-example # make directory
+cd /scratch/<NetID>/pytorch-example    # change the current directory to this place
 ```
 
-#### Step 2: Copy an appropriate gzipped overlay images from the overlay directory.####
+#### Step 2: Copy an appropriate gzipped overlay images from the overlay directory####
 
-You can browse available images to see available options.
+You can browse available images using `ls` to see available options.
 ```
 ls /scratch/work/public/overlay-fs-ext3
 ```
 
-In this example we use overlay-15GB-500K.ext3.gz as it has enough available storage for most conda environments. It has 15GB free space inside and is able to hold 500K files.
-You can use another size as needed. But since this overlay image cannot be modified later (or very complicated to do so), I would choose something slightly bigger than I need at the moment.
+In this example we use `overlay-15GB-500K.ext3.gz` as it has enough available storage for most conda environments. It has 15GB free space inside and is able to hold 500K files.
+You can use another size as needed. But since this overlay image cannot be modified later (or very complicated to do so), I recommend choosing the one slightly bigger than what you need at the moment.
 ```
 cp -rp /scratch/work/public/overlay-fs-ext3/overlay-15GB-500K.ext3.gz .
 gunzip overlay-15GB-500K.ext3.gz
@@ -193,17 +193,17 @@ gunzip overlay-15GB-500K.ext3.gz
 
 #### Step 3: Choose a corresponding Singularity image ####
 
-It is about OS system you will be using to run your code. This can be changed everytime you access to the overlay file.
+It is like choosing an OS system to run your code. This can be changed everytime you access to the overlay file.
 
 For this example we will use the following image
 ```
 /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif
 ```
-For Singularity image available on nyu HPC greene,  please check the singularity images folder 
+For Singularity image available on NYU HPC Greene, please check the singularity images folder 
 ```
-/scratch/work/public/singularity/
+ls /scratch/work/public/singularity/
 ```
-For the most recent supported versions, please check the [Tensorflow Website](https://www.tensorflow.org/install/pip). 
+For the most recent supported versions, please check the [Tensorflow website](https://www.tensorflow.org/install/pip). 
 
 #### Step 4: Launch the appropriate Singularity container in read/write mode (with the `:rw` flag) ####
 ```
@@ -213,18 +213,19 @@ The above starts a bash shell inside the referenced Singularity Container overla
 
 #### Step 5: Inside the container, download and install miniconda to /ext3/miniconda3 ####
 
+Run these lines:
 ```
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b -p /ext3/miniconda3
 ```
-You can further run this line to remove the installation file
+You can further run this line to remove the installation file:
 ```
 rm Miniconda3-latest-Linux-x86_64.sh
 ```
 
 #### Step 6: Create a wrapper script /ext3/env.sh using a text editor ####
 
-Use `nano` to create and open the file by typing
+Use `nano` to create and open the file by running this:
 ```
 nano /ext3/env.sh
 ```
@@ -241,9 +242,9 @@ export PATH=/ext3/miniconda3/bin:$PATH
 export PYTHONPATH=/ext3/miniconda3/bin:$PATH
 ```
 
-To save the file, press Ctrl+O, then Enter to save the file, and Ctrl+X to exit.
+To save the file, press `Ctrl+O`, then `Enter` to save the file, and `Ctrl+X` to exit.
 
-#### Step 7: Activate an update your conda environment ####
+#### Step 7: Activate and update your conda environment ####
 
 Run this to activate the environment:
 ```
@@ -283,46 +284,41 @@ You may now install packages into the environment with either the pip install or
 
 First, start an interactive job with adequate compute and memory resources to install packages. The login nodes restrict memory to 2GB per user, which may cause some large packages to crash.
 ```
-srun --cpus-per-task=2 --mem=10GB --time=04:00:00 --pty /bin/bash
+srun --cpus-per-task=2 --mem=10GB --time=04:00:00 --pty /bin/bash  # request a compute node
 
 # wait to be assigned a node
 
 singularity exec --overlay overlay-15GB-500K.ext3:rw /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
 
-source /ext3/env.sh
-# activate the environment
+source /ext3/env.sh # activate the environment
 ```
-
-After it is running, you’ll be redirected to a compute node. From there, run singularity to setup on conda environment, same as you were doing on login node.
 
 **Option 1: pip install (it works, but not recommended)**
 
 You can install PyTorch using `pip` as an example:
 ```
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
-
 pip3 install jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-image Pillow
 ```
 
 **Option 2: create a new conda env with specified packages (recommended)**
 
-*This is the option we use in the following tutorial.*
+*This is the option we use in the following sections.*
 
 I recommend using conda to ensure compatibility among packages. Execute this line: 
 
 ```
 conda create -n pytorch-ac8888 pytorch jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-image Pillow
 ```
-Where the `pytorch-ac8888` is the name of the conda environment. You can replace that with whatever you want.
+Where the `pytorch-ac8888` is the name of the conda environment. You can replace that with whatever name you want.
 
-After it is done, you can activate your conda environment:
+Once it is done, you can activate your conda environment:
 
 ```
 conda activate pytorch-ac8888
 ```
 
-
-Why creating a conda environment within a image which is already dedicated for a project? It is because very likely you will need a couple of environments to do different analyses due to incompatibility among the packages you want to use, or you may want to duplicate your environment as a safe copy before upgrading any packages.
+You may ask: Why creating a conda environment within a `.ext3` file, which is already dedicated to this project? It is because very likely that you will need a couple of environments to do different analyses due to incompatibility among the packages, or you may want to duplicate your environment in case upgrading some packages disrupts the whole environment.
 
 **Option 3: recreate a conda env from `.yaml` file (may not alway work)**
 
@@ -334,7 +330,7 @@ Use Globus to upload the '.yaml' [file](https://github.com/curlsloth/NYU-HPC-4-n
 conda env create -f environment.yml
 ```
 
-However, this may not always work, as some packages installed on your local machine may be incompatible with HPC. In that case, you may want to loose some constrains on the package versions, take out some unnecessary packages.
+However, this may not always work, as some packages installed on your local machine may be incompatible on HPC. In that case, you may want to loose some constrains on the package versions, and/or exclude some unnecessary packages.
 
 > Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) for more details on how to manage conda environment.
 
@@ -348,7 +344,7 @@ find /ext3 | wc -l
 du -sh  /ext3        
 # output should be something like 6.0G    /ext3
 ```
-Now, exit the Singularity container and then rename the overlay image. Typing 'exit' and hitting enter will exit the Singularity container if you are currently inside it. You can tell if you're in a Singularity container because your prompt will be different, such as showing the prompt 'Singularity>'
+Now, exit the Singularity container and then rename the overlay image. Typing `exit'`and hitting enter will exit the Singularity container if you are currently inside it. You can tell if you're in a Singularity container because your prompt will be different, such as showing the prompt `Singularity>`
 ```
 exit
 mv overlay-15GB-500K.ext3 my_pytorch.ext3
@@ -361,16 +357,15 @@ singularity exec --overlay /scratch/<NetID>/pytorch-example/my_pytorch.ext3:ro /
 #output: 2.3.1.post100
 ```
 
-Note that now you are accessing the image with the `:ro` flag, which means it is read only. It is recommended to use `:ro` when you are executing your script, so your script won't accidentally modify the packages.
+Note that now you are accessing the image with the `:ro` flag, which means it is read only. It is recommended to use `:ro` when you are executing your script, so you won't accidentally modify the packages of your environment.
 
-However, if you want to further modify the image, you have to change it into `:rw`.
+However, if you want to further modify the environment, you have to change it into `:rw`.
 
 ## 5. Quick run a Python script using `.bash` ##
 
 ### 5-1. Make a `.bash` script ###
-To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer named `run-pytorch-ac8888.bash` and upload it to HPC `/scratch/<NetID>/pytorch-example/`. The file should look something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
 
-(Remember: replace `<NetID>` with your own.)
+To simplify the steps required to access the conda environment in the image, you can create a `.bash` file as below on your computer, name it as `run-pytorch-ac8888.bash`, and upload it to the directory `/scratch/<NetID>/pytorch-example/`. The file should look something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
 
 ```
 #!/bin/bash
@@ -408,7 +403,7 @@ Now you can access to the conda environment simply by running:
 /scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash
 ```
 
-Check whether you are under the `pytorch-ac8888` environment, and the `*` sign indicate the currently activated environment:
+Check whether you are under the `pytorch-ac8888` environment:
 ```
 conda env list
 ## Output:
@@ -417,6 +412,8 @@ conda env list
 # base                     /ext3/miniconda3
 # pytorch-ac8888        *  /ext3/miniconda3/envs/pytorch-ac8888
 ```
+The `*` sign indicates the currently activated environment:
+
 ### 5-2. Use `.bash` script to run a Python script ###
 
 Here is a simple python script `print_odd_even.py` for demo, which can be downloaded [here](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/print_odd_even.py):
@@ -456,18 +453,18 @@ Now you can upload it to HPC `/scratch/<NetID>/pytorch-example/`, and the run th
 /scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 23
 # Output: 23 is an odd number
 ```
-To break it down, `/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash` is the `.bash` command, `python` calls the python program, `/scratch/<NetID>/pytorch-example/print_odd_even.py` is the .py script we are executing, and `23` is the numberical input of the function as `n`. You can replace `23` with any other integers.
+To break it down, `/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash` calls the `.bash` script file, `python` calls the Python program, `/scratch/<NetID>/pytorch-example/print_odd_even.py` is the .py function you are executing, and `23` is the numberical input of the function as `n`. In this example, you can replace `23` with any other integers.
 
-Note that the `sys.argv[0]` is the script `/scratch/<NetID>/pytorch-example/print_odd_even.py`, and the `sys.argv[1]` is the input `1`. The `sys.argv[_]` input will be automatically read as a string, so your numerical input will need to be converted into number by using `int()`.
+Note that the `sys.argv[0]` in the .py script represents `/scratch/<NetID>/pytorch-example/print_odd_even.py`, and the `sys.argv[1]` represents the input `1`. Any `sys.argv[_]` inputs will be automatically read as a string, so your numerical input will need to be converted into number by using `int()`.
 
-## 6. Run the same script in parallel ##
+## 6. Run the same script on multiple nodes in parallel ##
 
-One of the biggest advantage of using HPC is that you can run the same scripts in parallel. It can be easily achieved by using SLURM batch job:
+One of the biggest advantage of using HPC is that you can run the same scripts on multiple nodes in parallel. It can be easily achieved by using SLURM batch job:
 
 ```
 #!/bin/bash
 
-#SBATCH --job-name=testrun
+#SBATCH --job-name=testrun            # The name of the job
 #SBATCH --nodes=1                     # Request 1 compute node
 #SBATCH --cpus-per-task=1             # Request 1 CPU
 #SBATCH --mem=2GB                     # Request 2GB of RAM
@@ -484,7 +481,7 @@ Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-ne
 
 You can modify the requested resources as you want. But the more you requested, the longer queue time will be. Also, there's a limit of resource you can request, see [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
 
-As the script will save the output under `/scratch/<NetID>/pytorch-example/slurm_output/`, you will need to create a folder by running `mkdir /scratch/<NetID>/pytorch-example/slurm_output`
+As the script will save the output files under `/scratch/<NetID>/pytorch-example/slurm_output/`, you will need to create that folder by running `mkdir /scratch/<NetID>/pytorch-example/slurm_output`
 
 Now you can execute the script by running this line:
 ```
@@ -493,14 +490,7 @@ sbatch --array=0-99 /scratch/<NetID>/pytorch-example/sbatch_pytorch-ac8888.s
 ```
 The job ID is `48368654`.
 
-The `--array=0-99` means that there will be 100 copies of the script being executed, with input ranging from 0 to 99. Which is equivalent to running these lines individually:
-```
-/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 0
-/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 1
-/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 2
-...
-/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 99
-```
+The `--array=0-99` means that there will be 100 copies of the script being executed, with input ranging from 0 to 99. A number will be assigned to the `$SLURM_ARRAY_TASK_ID` in each instance.
 
 You can check the status of all your jobs using this line:
 ```
@@ -527,9 +517,9 @@ sacct -j <jobid> --format=JobID,JobName,MaxRSS,Elapsed
 sacct -u <username> --format=JobID,JobName,MaxRSS,Elapsed
 ```
 
-When the all the job is done, you will get an email titled something like this "Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]", where "ExitCode 0" means no error!
+When the all the job is done, you will get an email titled something like this "Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]", where "ExitCode 0" means there's no error! "ExitCode 1" means an error.
 
-You can list all the output file using `ls` command by executing this:
+You can list all the output file in the `/scratch/<NetID>/pytorch-example/slurm_output/` directory using `ls` command:
 ```
 ls /scratch/<NetID>/pytorch-example/slurm_output/
 # out_48368654_0.out   out_48368654_25.out  out_48368654_40.out  out_48368654_56.out  out_48368654_71.out  out_48368654_87.out
@@ -540,7 +530,7 @@ ls /scratch/<NetID>/pytorch-example/slurm_output/
 # (There shall be 100 files in total, with naming scheme out_[slurm job ID]_[SLURM_ARRAY_TASK_ID].out)
 ```
 
-You can check a file by using `cat` command:
+You can show the content of a file by using `cat` command to check the output of our Python script:
 ```
 cat /scratch/<NetID>/pytorch-example/slurm_output/out_48368654_0.out
 # Output: 0 is an even number
@@ -551,13 +541,11 @@ cat /scratch/<NetID>/pytorch-example/slurm_output/out_48368654_23.out
 
 ## 7. Miscellaneous topics ##
 
-There are too many topics of HPC. Here I only cover the ones that I have had deal with.
+There are too many things that HPC can do. Here I only cover the ones that I have done before.
 
 ### How to "install" other programs or libraries?  ###
 
-HPC uses module system load most software into a user’s environment.
-
-You will probably need it when you process audio files and/or video files
+HPC uses module system load most software into a user’s environment. It is very common if you are going to process audio and/or video files.
 
 You can use `module avail` to check the available modules on an HPC. There are hundreds on Greene.
 
@@ -570,7 +558,7 @@ module avail
 #   admixtools/intel/7.0.2                     google-cloud-sdk/357.0.0               octopus/openmpi/intel/20240311
 #   admixture/1.3.0                            google-cloud-sdk/379.0.0               octopus/openmpi/intel/20240323
 #   advanpix-mct/4.9.3.15018                   googletest/1.10.0                      onetbb/intel/2020.3
-...
+#...
 ```
 
 For example, your python audio-related packages may need to use the `libsndfile` (or something similar, as long as it is the same name as in the output of `module avail`) for processing audio files. Simply insert `module load libsndfile/intel/1.0.31` following the `module purge` in your `.s` sbatch file file as this:
@@ -600,15 +588,17 @@ You can add this line into your `.s` sbatch file:
 ```
 #SBATCH --gres=gpu:2 # requesting 2 GPUs
 ```
-However, requesting many CPUs and no GPU can often be much MUCH faster, if you consider both the queue time and computation time together (at least on Greene that is often the case). 
+However, unless your job really needs GPU and you are very experienced in using it, I don't recommend requesting for any GPUs:
 
-1. **The queue time will be very long.** GPU is rare and everyone wants to use it. In my experience, the fast computational speed of GPU cannot make up the extra queue time for requesting any GPU. It may be faster by just requesting CPUs.
-2. **NYU HPC will kill the job with low GPU usage.** Even your GPU job finally start running after a long queue, if the GPU usage is much lower than what you requested, you job will be terminated very soon. It may take you too much time to trial-and-error on this aspect as you will waste more time in queue.
-
-Therefore, unless your job really needs GPU and you are very experienced in using it, I don't recommend requesting for any GPUs.
+1. **The queue time is typically very long for requesting any GPU jobs.** GPU is rare and everyone wants to use it. In my experience, the fast computational speed of GPU cannot make up the extra queue time for requesting even 1 GPU.
+2. **NYU HPC will terminate the job with low GPU usage.** You may need to trial-and-error a few times to make sure you can well use a GPU, but that means your jobs will be in many long queues.
 
 ### Can I use Jupyter notebook on HPC? ###
 
 Yes you can do it via Open OnDemand! Here is the [instruction](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/open-ondemand-ood-with-condasingularity).
 
 I recommend to use this GUI to directly experimenting with your script while using the HPC's resources. It can be more effective than experimenting on your local computer with limited resources or run-and-debug everytime executing a .py file. Once you have a working pipeline, you can reorganize it into a .py file for scaling up.
+
+## 8. Acknowledgement ##
+
+Shout out to NYU HPC's technical staff. They are knowledgeable, friendly, patient, and very willing teach me. A huge thanks to them!!
