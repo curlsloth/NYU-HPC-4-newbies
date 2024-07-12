@@ -1,63 +1,66 @@
 # NYU High Performance Computing (HPC) for Newbies 🍼 #
 
-Last update: July 11, 2024
+Andrew Chang, Postdoctoral Fellow, Department of Psychology, New York University
+
+*Please email me (ac8888@nyu.edu) if you have any suggestions and advice!*
 
 ## 0. Preface ##
-This is a tutorial for computer muggles who wants to use NYU's HPC, **"Greene"**, for their research, which is also a note for myself and my future students. 
+This is a tutorial for computer muggles who want to use NYU's HPC, **"Greene,"** to analyze their data or fit a machine learning model. It also serves as a note for myself and my colleagues. Feel free to distribute it.
 
-Eventhough we all know that HPC can speed up our research, I found that most of people don't want to use it, because they worry that they will spend more time on learning HPC then waiting the computation completed on their laptops. This tutorial is designed to give you quick start. It will help you set up a reliable and replicable HPC environment within one afternoon, even if you are not a computer geek.
+Even though we all know that HPC can speed up our research, I found that most people don't want to use it because they worry that they will spend more time learning HPC than waiting for the computation to be completed on their laptops. This tutorial is designed to give you a quick start. It will help you set up a reliable and replicable HPC environment within one afternoon, even if you are not a computer geek.
 
-This tutorial is a short summary of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrating with my own tips. If you are a computer wizard or witch, this might be too easy for you. If you are interested in knowing all the commands and details, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC system may have different OS, this tutorial may not be applied to other HPCs. Despite my approaches may not be the most efficient or correct way to do things, hope this tutorial can give you a good start of using HPC and boost your productivity!
+This tutorial is a short summary of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrated with my own tips. This tutorial covers topics related to data science or data analysis workflows. If you are a computer wizard or witch, this might be too easy for you. If you are interested in knowing all the commands and details, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC systems may have different OS, this tutorial may not apply to other HPCs. Despite my approaches possibly not being the most efficient or correct way to do things, I hope this tutorial can give you a good start in using HPC and boost your productivity!
 
-You will need to know some basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`) to understand this tutorial. This is a neccesity as this will be the primary way you interact with HPC. But you can quickly learn them starting from [here](https://www.codecademy.com/article/command-line-commands). You don't have to be familiar with `Conda`, `Git/GitHub`, or `Python`, but if will be helpful if you have some experiences with it. This tutorial is written for Mac, and some commands may be slightly different if you are using a PC. 
+You will need to know some basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`) to understand this tutorial, as this will be the primary way you interact with HPC (see [here](https://www.codecademy.com/article/command-line-commands) for a tutorial). You have to be familiar with `Conda` commands too, as you will be using that to manage your environment (check out [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions). You don't have to be familiar with `Git/GitHub` or `Python`, but it will be helpful if you have some experience with them. This tutorial is written for Mac, and some commands may be slightly different if you are using a PC.
 
 Before starting, you have to request a NYU HPC account. See instructions [here](https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it/hpc-accounts-and-eligibility.html).
 
 ## 1. What is HPC? Should I use it? ##
 
-HPC is a system that you can request the computational resources (CPUs, GPUs, RAM, nodes) for each computational job, and you can request many jobs in parallel.
+HPC is a system where you can request computational resources (CPUs, GPUs, RAM, nodes) for each computational job, and you can request many jobs in parallel.
 
-### If your laptop is your kitchen at home, HPC is a restaurant. ####
+### If your laptop is your kitchen at home, HPC is a restaurant. ###
 
-While you can cook all kinds of cusines (scripts) in your kitchen at home (laptop), but you only have access to a few stoves (CPUs), and you can only cook a small portion (RAM) at a time. You don't have access to some specialized equipments (GPU), nor you can cook too many cusines in parallel. HPC is a restaurant with many cooks and equipments which can cook all kinds of cusines. You can assemble multiple cooks (compute nodes) and reserve multiple stoves (CPUs) and specialized equipments (GPUs) to cook multiple dishes at the same time. However, a downside of a restaurant is that it can be too busy to serve you if the cooks are already busy with serving other customers.
+While you can cook all kinds of cuisines (scripts) in your kitchen at home (laptop), you only have access to a few stoves (CPUs), and you can only cook a small portion (RAM) at a time. You don't have access to some specialized equipment (GPU), and you are the only cook (compute node). HPC is a restaurant with many cooks and equipment which can cook all kinds of cuisines. You can assemble multiple cooks (compute nodes) and reserve multiple stoves (CPUs) and specialized equipment (GPUs) to cook multiple dishes at the same time. However, a downside of a restaurant is that it can be too busy to serve you if the cooks are already busy with other customers.
 
 ### You probably want to use HPC if ###
-- you need more CPUs or RAM to do your job,
-- you need to run a time-consuming loop which can be executed independently in parallel,
-- you need to get access to a GPU.
+- You need more CPUs or RAM to do your job.
+- You need to run a time-consuming loop that can be executed independently in parallel.
+- You need to get access to a GPU.
 
 ### The HPC cannot help with ###
-- speeding up a time-consuming script which cannot be paralled. It will be equally slow on HPC.
+- Speeding up a time-consuming script that cannot be parallelized. It will be equally slow on HPC.
 
 ### How helpful can HPC be? ###
 
-I once needed to analyze 200k of audio files, and the process on each file would take approximately 15 seconds. In total, it will take 34.7 days to run through all the files, if my poor laptop doesn’t burn 🔥! 
-So, I ended up requesting 2000 jobs, each job process 100 files. As a result, it took less than 2 hours to complete all the jobs, including the queue time ⚡️! 
+I once needed to analyze 200k audio files, and the process on each file would take approximately 15 seconds. In total, it would take 34.7 days to run through all the files if my poor laptop doesn’t burn 🔥! 
+So, I ended up requesting 2000 jobs, each job processing 100 files. As a result, it took less than 2 hours to complete all the jobs, including the queue time ⚡️!
+
 
 ## 2. Your first step of using HPC! ##
 ### 2-1. What is HPC? ###
 
-If you are using Mac, open your terminal application ([default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.) or [iTerm](https://iterm2.com/)), connect to [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into the Greene by executing this line (keyin and then press enter):
+If you are using a Mac, open your terminal application ([default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.)) or [iTerm](https://iterm2.com/), connect to the [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into Greene by executing this line (key in and then press enter):
 
 ```
 ssh <NetID>@gw.hpc.nyu.edu 
 ```
 > **Replace `<NetID>` of this tutorial with your own, such as `ab1234`**
 
-It will then ask you to keyin your password. 
+Then enter your password. It should be the same as your NetID password.
 
-If everything is correct, the login node will look something like this 
+If everything is correct, the login node will look something like this:
 ```
 [<NetID>@log-3 ~]$
 ```
 
-`log-3` is the login node. Please do NOT run CPU heavy jobs on login nodes, and it is serving other users as well. 
+`log-3` is the login node. Please do NOT run CPU-heavy jobs on login nodes, as it serves other users as well.
 
-Your first step is to request a compute node dedicated to serve you. Execute this line: 
+Your first step is to request a compute node dedicated to serving you. Execute this line:
 ```
 srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash
 ```
-It means that you request the node to have 1 CPU and 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
+It means that you request the node to have 1 CPU and 10 GB of RAM and serve you for 4 hours. You can change these parameters to whatever you want. **However, the more resources you request, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
 
 After a short queue, you will see the terminal displaying this:
 
@@ -70,7 +73,8 @@ srun: job 48347520 has been allocated resources
 
 Now you have a compute node `cm015` ready to serve you. 
 
-You can call python (type and press enter) by executing this line:
+You can start Python by executing this line:
+
 ```
 python
 # Output:
@@ -81,24 +85,24 @@ python
 ```
 Now you can run any Python commands following `>>>` on HPC the same way as you do on your local computer.
 
-Congrats! Now you know the core workflow of using HPC. The following sections are all about how to make the process much easier, automatic, replicable and parallel.
+Congratulations! Now you know the core workflow of using HPC. The following sections cover how to streamline the process to make it easier, automatic, replicable, and parallel.
 
-> Note that as Greene is Linux based, the command you used will need to be Linux based too.
+> Note that since Greene is Linux-based, the commands you use will need to be Linux-based as well.
 
 ## 3. HPC data management ##
 
 ### 3-1. Greene storage options ###
 
-There are a few root directories on Greene, and each of them have different specifications for different purposes.
+There are several root directories on Greene, each with different specifications tailored for various purposes.
 
-|Storage  |Disk Space / Number of Files        	  |Backed Up / Flushed	               |Recommendation                                                                                                                 |
-|---------|-----------------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-|/home	  |50 GB / 30 K	                      |YES / NO                            |Store your singularity and other frequently used keys or important results.                                                        |
-|/archive |5 TB / 1 M	        	              |NO / Files not accessed for 60 days |Long-term storage. Archive your projects as .tar or .zip or unused singularity files. Only for infrequent access                   |
-|/scratch	|2 TB / 20 K	                      |YES / NO	                           |Put working projects here, especially with small number of big files (e.g., neuroimage)                                            |
-|/vast	  |2 TB / 5 M	                        |NO / Files not accessed for 60 days |Put working projects here, especially the project involving many small files with high I/O workflows (e.g., audio or image files)  |
+| Storage   | Disk Space / Number of Files     | Backed Up / Flushed             | Recommendation                                                                                                                 |
+|-----------|----------------------------------|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| /home     | 50 GB / 30 K                     | YES / NO                        | Store your Singularity and other frequently used keys or important results.                                                      |
+| /archive  | 5 TB / 1 M                       | NO / Files not accessed for 60 days | Long-term storage. Archive your projects as .tar or .zip or unused Singularity files. Only for infrequent access.               |
+| /scratch  | 2 TB / 20 K                      | YES / NO                        | Put working projects here, especially those with a small number of large files (e.g., neuroimages).                             |
+| /vast     | 2 TB / 5 M                       | NO / Files not accessed for 60 days | Put working projects here, especially those involving many small files with high I/O workflows (e.g., audio or image files).   |
 
-You can execute `myquota` command to see the current usage of your storages.
+You can execute the `myquota` command to see the current usage of your storage.
 ```
 myquota
 # Output:
@@ -115,7 +119,7 @@ myquota
 
 #### Organizing and archieving files ####
 
-Typically you want to put your project folder under `/scratch` or `/vast`, and the conda environment and singularity (will explain later) and other personal login files under `/home`. As the data not accessed for 60 under `/scratch` and `/vast` will be wiped out, I recommend compress the project folder and save under `/archive` once in a while.
+Typically, you want to put your project folder under `/scratch` or `/vast`, and your Conda environment, Singularity (will explain later), and other personal login files under `/home`. Since data not accessed for 60 days under `/scratch` and `/vast` will be wiped out, I recommend compressing the project folder and saving it under `/archive` periodically.
 
 Run this line to compress the folder and save it under `/archive`:
 ```
@@ -131,106 +135,117 @@ Here is an [instruction](https://support.apple.com/guide/terminal/compress-and-u
 
 ### 3-2. Data transfer ###
 
-According to NYU HPC's [website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers), there are number of ways to transfer data to HPC. Here I introduce the two ways that I recommend.
+According to NYU HPC's [website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers), there are a number of ways to transfer data to HPC. Here, I will introduce two methods that I recommend.
 
 #### Use Globus to transfer big data files ####
 
-Globus has a browser-based user interface to transfer the files. It is very intuitive to use and features automatic error monitoring. See [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers/globus) for the instruction. 
+Globus has a browser-based user interface for file transfers, which is very intuitive and features automatic error monitoring. See [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers/globus) for instructions.
 
-However, Globus can be really slow if you are transfer a large quantitive of files. In that case, you can simply compress the entire folder on the local machine as one tar file, upload that one tar file using globus, and uncompress on HPC. 
+However, Globus can be slow when transferring a large quantity of files. In such cases, you can simply compress the entire folder on your local machine into a single tar file, upload that tar file using Globus, and then uncompressed it on HPC.
 
 #### Use GitHub to transfer scripts (and a small number of small-sized data files) ####
 
-Manually synchronizing script files using Globus can be error-prone, as you can easily loose track. Also, again, transferring a large number of small files can be very slow via Globus. Therefore, I recommend synchronizing your scripts (and maybe a small number of small-sized data files) using GitHub. Just like you are working on the same project on two computers.
+Manually synchronizing script files using Globus can be error-prone, as it's easy to lose track, especially when dealing with a large number of small files. Therefore, I recommend synchronizing your scripts (and perhaps a small number of small-sized data files) using GitHub, similar to working on the same project across multiple computers.
 
-Clone a GitHub repository to HPC is the same as you do on your local machine ([instruction](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)). Just remember to [`.gitignore`](https://www.w3schools.com/git/git_ignore.asp) your data folder and anything else you don't want to share. 
+Cloning a GitHub repository to HPC is the same as on your local machine ([instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)). Just remember to [`.gitignore`](https://www.w3schools.com/git/git_ignore.asp) your data folder and anything else you don't want to share.
 
-> **Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure). You can manually do it if you don't want to run the script for it. **The future you will thank you!**
+> **Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure). You can do this manually if you prefer not to run the script for it. **Future you will thank you!**
 
-## 4. Set up replicable programming environment using Singularity and Conda ##
+## 4. Set up a Replicable Programming Environment using Singularity and Conda ##
 
-Probably the most complicated step to use HPC is to create the environment and install all the packages. Singularity and Miniconda can make it much easier. It may take you a couple of hours to do all the steps for the first time, but it will get much easier and faster very soon.
+One of the more complex steps in using HPC is setting up the environment and installing all necessary packages. Singularity and Miniconda can simplify this process significantly. While it may take a couple of hours to complete all the steps for the first time, it will become faster and easier.
 
-### 4-1. Use Conda to manage environment ###
+### 4-1. Use Conda to Manage Environments ###
 
-Conda is a powerful tool for package and environment management. You can create multiple environments with different versions of packages and dependencies which won't interfere with each other. Within each environment, everytime you install a new package, its dependency with other existing ones will be checked and updated. This is especially useful if you work on multiple projects using different sets of tools, and if you want to install new packages but worrying that modification will screw up the existing environment.
+Conda is a powerful tool for package and environment management. It allows you to create multiple environments with different versions of packages and dependencies that won't interfere with each other. Whenever you install a new package within an environment, Conda checks and updates its dependencies with other existing packages. This is particularly useful when working on multiple projects using different sets of tools, or when you want to install new packages without risking conflicts in the existing environment.
 
-To keep this tutorial focused on HPC, I am assuming that you are familiar Conda and have been activily using on your local computer. **If not, start using Conda today! See [here](https://conda.org/learn/faq/#:~:text=It%20provides%20a%20unified%20interface,compatibility%20issues%20across%20different%20platforms.) for why you should use it, and see [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions.**
+To keep this tutorial focused on HPC, I assume that you are already familiar with Conda and actively using it on your local computer. **If not, start using Conda today! See [here](https://conda.org/learn/faq/#:~:text=It%20provides%20a%20unified%20interface,compatibility%20issues%20across%20different%20platforms.) for reasons why you should use it, and check out [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions.**
 
-### 4-2. Use Singularity to contain Conda environment ###
+### 4-2. Use Singularity to Contain Conda Environment ###
 
-[Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html) is a container platform specifically designed for HPC, and it has become widely used in many HPC systems and has become a standard.
+[Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html) is a container platform specifically designed for HPC and has become widely adopted across many HPC systems as a standard.
 
-Without Singularity, you don't really have a good place to put your conda environment file in HPC. The `/home` space can only contain a limited number of files, which may not be enough to host all the packages. Despite `/scratch` and `/vast` can contain many files, these places will be wiped out regularily. You don't want to reset your conda environment again and again! 
+Without Singularity, finding a suitable place to store your Conda environment file on HPC can be challenging. The `/home` space typically has limits on the number of files it can contain, which may not be sufficient to host all required packages. While `/scratch` and `/vast` can accommodate many files, these locations are regularly wiped clean. You wouldn't want to repeatedly recreate your Conda environment!
 
-**Singularity acts like a containor.** It is recognized as one single file by the HPC file system. But within this containor, you can put as many files as you want, up to it predefined space. Therefore, you can put your Singularity container under `/home` without worrying it exceeding the limit of the number of files.
+**Singularity acts like a container.** It appears as a single file to the HPC file system but can contain numerous files within. This allows you to store your Singularity container under `/home` without concerns about hitting file limits.
 
-**You can even share a copy your singularity `.ext3` file with others to ensure replicability!** Your peers won't need to reinstall the packages you used, which may not even available in a few years. The only issue is that the `.ext3` file is usually huge, depending on the size you initially requested.
+**You can even share a copy of your Singularity `.ext3` file with others to ensure reproducibility!** Your colleagues won't need to reinstall the packages you used, which may no longer be available in the future. However, note that the `.ext3` file can be quite large, depending on the initial size you requested.
 
-### 4-3. Step-by-step guidance ###
+### 4-3. Step-by-step Guidance ###
 
-*This section is primarily modified from the [NYU HPC website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/singularity-with-miniconda).*
+*This section is primarily adapted from the [NYU HPC website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/singularity-with-miniconda).*
 
-#### Step 1: Create a directory for the environment ####
+#### Step 1: Create a Directory for the Environment ####
 ```
 mkdir /scratch/<NetID>/pytorch-example # make directory
 cd /scratch/<NetID>/pytorch-example    # change the current directory to this place
 ```
 
-#### Step 2: Copy an appropriate gzipped overlay images from the overlay directory####
+#### Step 2: Copy an Appropriate Gzipped Overlay Image from the Overlay Directory ####
 
-You can browse available images using `ls` to see available options.
+You can browse available images using `ls` to see the options available:
+
 ```
 ls /scratch/work/public/overlay-fs-ext3
 ```
 
-In this example we use `overlay-15GB-500K.ext3.gz` as it has enough available storage for most conda environments. It has 15GB free space inside and is able to hold 500K files.
-You can use another size as needed. But since this overlay image cannot be modified later (or very complicated to do so), I recommend choosing the one slightly bigger than what you need at the moment.
+In this example, we'll use `overlay-15GB-500K.ext3.gz` as it provides sufficient storage for most Conda environments. It offers 15GB of free space and can hold up to 500K files. You can choose a different size if needed, but remember that the overlay image cannot be easily modified later. It's recommended to select one slightly larger than your current needs.
+
 ```
 cp -rp /scratch/work/public/overlay-fs-ext3/overlay-15GB-500K.ext3.gz .
 gunzip overlay-15GB-500K.ext3.gz
 ```
 
-#### Step 3: Choose a corresponding Singularity image ####
+#### Step 3: Choose a Corresponding Singularity Image ####
 
-It is like choosing an OS system to run your code. This can be changed everytime you access to the overlay file.
+Choosing a Singularity image is akin to selecting an operating system to run your code. You can change this each time you access the overlay file.
 
-For this example we will use the following image
+For this example, we will use the following image:
+
 ```
 /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif
 ```
-For Singularity image available on NYU HPC Greene, please check the singularity images folder 
+
+To view available Singularity images on NYU HPC Greene, you can check the singularity images folder:
+
 ```
 ls /scratch/work/public/singularity/
 ```
-For the most recent supported versions, please check the [Tensorflow website](https://www.tensorflow.org/install/pip). 
 
-#### Step 4: Launch the appropriate Singularity container in read/write mode (with the `:rw` flag) ####
+For the most recent supported versions, refer to the [TensorFlow website](https://www.tensorflow.org/install/pip).
+
+#### Step 4: Launch the Appropriate Singularity Container in Read/Write Mode (with the `:rw` Flag) ####
+
 ```
 singularity exec --overlay overlay-15GB-500K.ext3:rw /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
 ```
-The above starts a bash shell inside the referenced Singularity Container overlayed with the 15GB 500K you set up earlier. This creates the functional illusion of having a writable filesystem inside the typically read-only Singularity container.
 
-#### Step 5: Inside the container, download and install miniconda to /ext3/miniconda3 ####
+The above command starts a bash shell inside the specified Singularity container, overlaid with the 15GB, 500K file system you set up earlier. This setup provides the illusion of having a writable filesystem inside what is typically a read-only Singularity container.
 
-Run these lines:
+#### Step 5: Inside the Container, Download and Install Miniconda to /ext3/miniconda3 ####
+
+Run these commands:
+
 ```
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b -p /ext3/miniconda3
 ```
-You can further run this line to remove the installation file:
+
+You can then remove the installation file to save space:
+
 ```
 rm Miniconda3-latest-Linux-x86_64.sh
 ```
 
-#### Step 6: Create a wrapper script /ext3/env.sh using a text editor ####
+#### Step 6: Create a Wrapper Script /ext3/env.sh Using a Text Editor ####
 
-Use `nano` to create and open the file by running this:
+Use nano to create and open the file:
+
 ```
 nano /ext3/env.sh
 ```
 
-The wrapper script will activate your conda environment, to which you will be installing your packages and dependencies. The script should contain the following:
+Inside nano, enter the following content for the wrapper script. This script will activate your Conda environment where you can install your packages and dependencies:
 
 ```
 #!/bin/bash
@@ -244,7 +259,7 @@ export PYTHONPATH=/ext3/miniconda3/bin:$PATH
 
 To save the file, press `Ctrl+O`, then `Enter` to save the file, and `Ctrl+X` to exit.
 
-#### Step 7: Activate and update your conda environment ####
+#### Step 7: Activate and Update Your Conda Environment ####
 
 Run this to activate the environment:
 ```
@@ -278,7 +293,7 @@ exit
 # exit Singularity
 ```
 
-#### Step 8: Install packages ####
+#### Step 8: Install Packages ####
 
 You may now install packages into the environment with either the pip install or conda install commands. 
 
@@ -303,40 +318,42 @@ pip3 install jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-imag
 
 **Option 2: create a new conda env with specified packages (recommended)**
 
-*This is the option we use in the following sections.*
+*The following sections will be based on this.*
 
-I recommend using conda to ensure compatibility among packages. Execute this line: 
+I recommend using conda to ensure compatibility among packages. Execute this command to create a Conda environment named `pytorch-ac8888` with several essential packages installed:
 
 ```
 conda create -n pytorch-ac8888 pytorch jupyter jupyterhub pandas matplotlib scipy scikit-learn scikit-image Pillow
 ```
-Where the `pytorch-ac8888` is the name of the conda environment. You can replace that with whatever name you want.
 
-Once it is done, you can activate your conda environment:
+After the environment is created, activate it using:
 
 ```
 conda activate pytorch-ac8888
 ```
 
-You may ask: Why creating a conda environment within a `.ext3` file, which is already dedicated to this project? It is because very likely that you will need a couple of environments to do different analyses due to incompatibility among the packages, or you may want to duplicate your environment in case upgrading some packages disrupts the whole environment.
+You might wonder why we create a Conda environment within a `.ext3` file, which is already dedicated to this project. The reason is that you may need multiple environments for different analyses due to package incompatibilities. Also, having separate environments allows you to duplicate them as backups in case upgrading some packages disrupts the entire environment. This approach ensures flexibility and reproducibility in your HPC workflows.
 
-**Option 3: recreate a conda env from `.yaml` file (may not alway work)**
+> Refer to the [Conda documentation](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) for more details on managing Conda environments.
 
-You can even export a `.yaml` file listing all the packages and versions you use on your local computer, upload it the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. 
+**Option 3: recreate a Conda env from `.yaml` file (may not alway work)**
 
-Use Globus to upload the '.yaml' [file](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/pytorch-ac8888_20240711.yaml) to `/scratch/<NetID>/pytorch-example/`, and then run the following line:
+You can export a `.yaml` file listing all the packages and versions you use on your local computer, upload it to HPC, and use it to recreate a Conda environment. This method replicates the exact same environment on HPC.
+
+1. Use Globus to upload the `.yaml` [file](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/pytorch-ac8888_20240711.yaml) to `/scratch/<NetID>/pytorch-example/`.
+   
+2. Run the following command on HPC:
 
 ```
-conda env create -f environment.yml
+conda env create -f /scratch/<NetID>/pytorch-example/pytorch-ac8888_20240711.yaml
 ```
 
-However, this may not always work, as some packages installed on your local machine may be incompatible on HPC. In that case, you may want to loose some constrains on the package versions, and/or exclude some unnecessary packages.
+However, note that this approach may not always work perfectly. Some packages installed on your local machine might be incompatible on HPC. In such cases, you may need to relax constraints on package versions or exclude unnecessary packages from the `.yaml` file.
 
-> Follow this [instruction](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) for more details on how to manage conda environment.
+#### Step 9: Verify Your Setup ####
 
-#### Step 9: Verify your setup ####
+You can check the available space left on your image using the following command:
 
-You can see the available space left on your image with the following commands:
 ```
 find /ext3 | wc -l
 # output: should be something like 222076
@@ -357,15 +374,16 @@ singularity exec --overlay /scratch/<NetID>/pytorch-example/my_pytorch.ext3:ro /
 #output: 2.3.1.post100
 ```
 
-Note that now you are accessing the image with the `:ro` flag, which means it is read only. It is recommended to use `:ro` when you are executing your script, so you won't accidentally modify the packages of your environment.
+Note that by default, you are accessing the image with the `:ro` (read-only) flag, which prevents accidental modifications to the packages in your environment. This is recommended when executing your scripts to maintain consistency.
 
-However, if you want to further modify the environment, you have to change it into `:rw`.
+If you need to make further modifications to the environment, you will need to change the flag to `:rw` (read-write). This allows you to write changes to the Singularity container, such as installing new packages or updating existing ones. 
 
-## 5. Quick run a Python script using `.bash` ##
+## 5. Quickly run a Python script using `.bash` ##
 
-### 5-1. Make a `.bash` script ###
+### 5-1. Create a `.bash` Script ###
 
-To simplify the steps required to access the conda environment in the image, you can create a `.bash` file as below on your computer, name it as `run-pytorch-ac8888.bash`, and upload it to the directory `/scratch/<NetID>/pytorch-example/`. The file should look something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
+To simplify the steps required to access the Conda environment in the image, you can create a `.bash` file on your computer named `run-pytorch-ac8888.bash` and upload it to the directory `/scratch/<NetID>/pytorch-example/`. The file should resemble [this example](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
+
 
 ```
 #!/bin/bash
@@ -393,17 +411,17 @@ ${args}
 "
 ```
 
-To make this script executable, run this command
+To make this script executable, run this command:
 ```
 chmod 755  /scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash
 ```
 
-Now you can access to the conda environment simply by running:
+Now you can access to the Conda environment simply by running:
 ```
 /scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash
 ```
 
-Check whether you are under the `pytorch-ac8888` environment:
+Check which environment is currently activated:
 ```
 conda env list
 ## Output:
@@ -412,11 +430,11 @@ conda env list
 # base                     /ext3/miniconda3
 # pytorch-ac8888        *  /ext3/miniconda3/envs/pytorch-ac8888
 ```
-The `*` sign indicates the currently activated environment:
+The `*` sign indicates the currently activated environment.
 
 ### 5-2. Use `.bash` script to run a Python script ###
 
-Here is a simple python script `print_odd_even.py` for demo, which can be downloaded [here](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/print_odd_even.py):
+Here is a simple Python script `print_odd_even.py` for demonstration purposes, which can be downloaded [here](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/print_odd_even.py):
 
 ```
 #!/usr/bin/env python3
@@ -447,19 +465,24 @@ if __name__ == "__main__":
     sys.exit(0)
 ```
 
-Now you can upload it to HPC `/scratch/<NetID>/pytorch-example/`, and the run the line below:
+Now you can upload it to HPC `/scratch/<NetID>/pytorch-example/` and then run the following command: 
 
 ```
 /scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 23
 # Output: 23 is an odd number
 ```
-To break it down, `/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash` calls the `.bash` script file, `python` calls the Python program, `/scratch/<NetID>/pytorch-example/print_odd_even.py` is the .py function you are executing, and `23` is the numberical input of the function as `n`. In this example, you can replace `23` with any other integers.
 
-Note that the `sys.argv[0]` in the .py script represents `/scratch/<NetID>/pytorch-example/print_odd_even.py`, and the `sys.argv[1]` represents the input `1`. Any `sys.argv[_]` inputs will be automatically read as a string, so your numerical input will need to be converted into number by using `int()`.
+To break it down:
+- `/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash` calls the `.bash` script file.
+- `python` calls the Python interpreter.
+- `/scratch/<NetID>/pytorch-example/print_odd_even.py` is the Python script you are executing.
+- `23` is the numerical input (`n`) for the function. In this example, you can replace `23` with any other integer.
+
+Note that `sys.argv[0]` in the Python script represents `/scratch/<NetID>/pytorch-example/print_odd_even.py`, and `sys.argv[1]` represents the input value `23`. All `sys.argv[_]` inputs are automatically read as strings, so numerical inputs need to be converted to integers using `int()`.
 
 ## 6. Run the same script on multiple nodes in parallel ##
 
-One of the biggest advantage of using HPC is that you can run the same scripts on multiple nodes in parallel. It can be easily achieved by using SLURM batch job:
+One of the biggest advantages of using HPC is that you can run the same script on multiple nodes in parallel. This can be easily achieved using SLURM batch jobs:
 
 ```
 #!/bin/bash
@@ -477,22 +500,26 @@ module purge                          # unload all currently loaded modules in t
 
 /scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py $SLURM_ARRAY_TASK_ID
 ```
+
 Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/sbatch_pytorch-ac8888.s) and upload it to `/scratch/<NetID>/pytorch-example/`.
 
-You can modify the requested resources as you want. But the more you requested, the longer queue time will be. Also, there's a limit of resource you can request, see [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
+You can modify the requested resources as needed. However, requesting more resources will increase the queue time. There are also limits on the resources you can request; please refer to [this link](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
 
-As the script will save the output files under `/scratch/<NetID>/pytorch-example/slurm_output/`, you will need to create that folder by running `mkdir /scratch/<NetID>/pytorch-example/slurm_output`
+Since the script will save output files under `/scratch/<NetID>/pytorch-example/slurm_output/`, ensure you create that folder beforehand by running `mkdir /scratch/<NetID>/pytorch-example/slurm_output`.
 
-Now you can execute the script by running this line:
+Now you can execute the script by running this command:
+
 ```
 sbatch --array=0-99 /scratch/<NetID>/pytorch-example/sbatch_pytorch-ac8888.s
-# output: Submitted batch job 48368654
+# Output: Submitted batch job 48368654
 ```
+
 The job ID is `48368654`.
 
-The `--array=0-99` means that there will be 100 copies of the script being executed, with input ranging from 0 to 99. A number will be assigned to the `$SLURM_ARRAY_TASK_ID` in each instance.
+The `--array=0-99` option means that there will be 100 instances of the script executed, with inputs ranging from 0 to 99. Each instance will be assigned a number stored in `$SLURM_ARRAY_TASK_ID`.
 
-You can check the status of all your jobs using this line:
+You can check the status of all your jobs using this command:
+
 ```
 squeue -u <NetID>
 # Output: 
@@ -517,9 +544,9 @@ sacct -j <jobid> --format=JobID,JobName,MaxRSS,Elapsed
 sacct -u <username> --format=JobID,JobName,MaxRSS,Elapsed
 ```
 
-When the all the job is done, you will get an email titled something like this "Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]", where "ExitCode 0" means there's no error! "ExitCode 1" means an error.
+When the all the jobs are done, you will receive an email titled something like this "Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]", where "ExitCode 0" means there's no error! "ExitCode 1" means an error.
 
-You can list all the output file in the `/scratch/<NetID>/pytorch-example/slurm_output/` directory using `ls` command:
+You can list all the output files in the `/scratch/<NetID>/pytorch-example/slurm_output/` directory using the `ls` command:
 ```
 ls /scratch/<NetID>/pytorch-example/slurm_output/
 # out_48368654_0.out   out_48368654_25.out  out_48368654_40.out  out_48368654_56.out  out_48368654_71.out  out_48368654_87.out
@@ -527,10 +554,11 @@ ls /scratch/<NetID>/pytorch-example/slurm_output/
 # out_48368654_11.out  out_48368654_27.out  out_48368654_42.out  out_48368654_58.out  out_48368654_73.out  out_48368654_89.out
 # out_48368654_12.out  out_48368654_28.out  out_48368654_43.out  out_48368654_59.out  out_48368654_74.out  out_48368654_8.out
 # ...
-# (There shall be 100 files in total, with naming scheme out_[slurm job ID]_[SLURM_ARRAY_TASK_ID].out)
+# (There should be a total of 100 files, each following the naming scheme out_[slurm job ID]_[SLURM_ARRAY_TASK_ID].out.)
 ```
 
-You can show the content of a file by using `cat` command to check the output of our Python script:
+You can view the content of a file using the `cat` command to check the output of our Python script:
+
 ```
 cat /scratch/<NetID>/pytorch-example/slurm_output/out_48368654_0.out
 # Output: 0 is an even number
@@ -541,13 +569,13 @@ cat /scratch/<NetID>/pytorch-example/slurm_output/out_48368654_23.out
 
 ## 7. Miscellaneous topics ##
 
-There are too many things that HPC can do. Here I only cover the ones that I have done before.
+HPC systems offer a wide range of capabilities. Here, I'll cover the ones I've worked with before.
 
 ### How to "install" other programs or libraries?  ###
 
-HPC uses module system load most software into a user’s environment. It is very common if you are going to process audio and/or video files.
+HPC systems typically use a module system to load most software into a user’s environment. This approach is particularly useful for tasks involving audio and/or video file processing.
 
-You can use `module avail` to check the available modules on an HPC. There are hundreds on Greene.
+You can use `module avail` to check the available modules on an HPC. On Greene, for example, there are hundreds of modules available.
 
 ```
 module avail
@@ -561,17 +589,16 @@ module avail
 #...
 ```
 
-For example, your python audio-related packages may need to use the `libsndfile` (or something similar, as long as it is the same name as in the output of `module avail`) for processing audio files. Simply insert `module load libsndfile/intel/1.0.31` following the `module purge` in your `.s` sbatch file file as this:
+For example, if your Python packages related to audio processing require `libsndfile`, you can load it using module load `libsndfile/intel/1.0.31`. Insert this command after module purge in your `.sbatch` file like this:
+
 ```
 module purge
 module load libsndfile/intel/1.0.31
 ```
 
-### Can I run MATLAB script on HPC? ##
+Yes, you can. Setting up MATLAB on HPC is usually easier than Python, as it typically does not involve Singularity and Conda. You only need to use the module command to load MATLAB.
 
-Yes you can, and actually the setup is even easier than Python, as it usually does not involve Singularity and Conda. You only need to use `module` to load MATLAB.
-
-There are a few modifications in your `.s` sbatch file, right below the `#SBATCH` section:
+Make a few modifications in your `.sbatch` file right below the `#SBATCH` section:
 
 ```
 module purge
@@ -580,7 +607,7 @@ module load matlab/2023b # There are many other versions available on Greene you
 matlab -nodisplay -r "your_matlab_function(input_X, $SLURM_ARRAY_TASK_ID); exit;"
 ```
 
-Note that executing MATLAB script will always return "COMPLETED, ExitCode [0]", no matter whether it crushed or not! Therefore, make sure that you check the slurm output files.
+Note that executing a MATLAB script will always return "COMPLETED, ExitCode [0]", regardless of whether it crashed or not. Therefore, make sure to check the SLURM output files for accurate status.
 
 ### How to request GPU? ###
 
@@ -588,17 +615,18 @@ You can add this line into your `.s` sbatch file:
 ```
 #SBATCH --gres=gpu:2 # requesting 2 GPUs
 ```
-However, unless your job really needs GPU and you are very experienced in using it, I don't recommend requesting for any GPUs:
+However, unless your job specifically requires GPU usage and you are highly experienced in utilizing it, I do not recommend requesting GPUs for the following reasons:
 
-1. **The queue time is typically very long for requesting any GPU jobs.** GPU is rare and everyone wants to use it. In my experience, the fast computational speed of GPU cannot make up the extra queue time for requesting even 1 GPU.
-2. **NYU HPC will terminate the job with low GPU usage.** You may need to trial-and-error a few times to make sure you can well use a GPU, but that means your jobs will be in many long queues.
+1. **Long Queue Times:** Queue times for GPU jobs are typically very long because GPUs are in high demand. Even with the faster computational speed of GPUs, the extended queue times often negate their benefits.
+
+2. **Termination for Low GPU Usage:** NYU HPC may terminate jobs that do not effectively utilize GPUs. This could require trial-and-error to optimize GPU usage, resulting in prolonged queue times for your jobs.
 
 ### Can I use Jupyter notebook on HPC? ###
 
-Yes you can do it via Open OnDemand! Here is the [instruction](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/open-ondemand-ood-with-condasingularity).
+Yes, you can use Open OnDemand! Here are the [instructions](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/open-ondemand-ood-with-condasingularity).
 
-I recommend to use this GUI to directly experimenting with your script while using the HPC's resources. It can be more effective than experimenting on your local computer with limited resources or run-and-debug everytime executing a .py file. Once you have a working pipeline, you can reorganize it into a .py file for scaling up.
+I recommend using this GUI to experiment directly with your scripts while utilizing HPC's resources. It can be more effective than testing on your local computer with limited resources or running debugging cycles each time you execute a `.py` file. Once you have a working pipeline, you can reorganize it into a `.py` file for scaling up.
 
 ## 8. Acknowledgement ##
 
-Shout out to NYU HPC's technical staff. They are knowledgeable, friendly, patient, and very willing teach me. A huge thanks to them!!
+Shout out to NYU HPC's technical staff. They are knowledgeable, friendly, patient, and very willing to teach me. A huge thanks to them!!
