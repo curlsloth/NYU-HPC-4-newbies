@@ -658,6 +658,7 @@ if __name__ == "__main__":
     # Extract command-line arguments
     n = int(sys.argv[1])
 
+    # This section has been modified
     for i in range(n*1000, (n+1)*1000):
        if i%2==0:
            print_even_number(i)
