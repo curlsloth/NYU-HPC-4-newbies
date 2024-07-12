@@ -98,11 +98,11 @@ Congratulations! Now you know the core workflow of using HPC. The following sect
 
 There are several root directories on Greene, each with different specifications tailored for various purposes.
 
-| Storage   | Disk Space / Number of Files     | Backed Up / Flushed             | Recommendation                                                                                                                 |
-|-----------|----------------------------------|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| /home     | 50 GB / 30 K                     | YES / NO                        | Store your Singularity and other frequently used keys or important results.                                                      |
-| /archive  | 5 TB / 1 M                       | NO / Files not accessed for 60 days | Long-term storage. Archive your projects as .tar or .zip or unused Singularity files. Only for infrequent access.               |
-| /scratch  | 2 TB / 20 K                      | YES / NO                        | Put working projects here, especially those with a small number of large files (e.g., neuroimages).                             |
+| Storage   | Disk Space / Number of Files     | Backed Up / Flushed                 | Recommendation                                                                                                                 |
+|-----------|----------------------------------|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| /home     | 50 GB / 30 K                     | YES / NO                            | Store your Singularity and other frequently used keys or important results.                                                    |
+| /archive  | 2 TB / 20 K                      | YES / NO                            | Long-term storage. Archive your projects as .tar or .zip or unused Singularity files. Only for infrequent access.              |
+| /scratch  | 5 TB / 1 M                       | NO / Files not accessed for 60 days | Put working projects here, especially those with a small number of large files (e.g., neuroimages).                            |
 | /vast     | 2 TB / 5 M                       | NO / Files not accessed for 60 days | Put working projects here, especially those involving many small files with high I/O workflows (e.g., audio or image files).   |
 
 You can execute the `myquota` command to see the current usage of your storage.
