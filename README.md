@@ -534,7 +534,7 @@ squeue -u <NetID>
 #   48368654_[0-99] short,cs,  testrun  <NetID> PD       0:00      1 
 ```
 
-Here are some other useful SLURM commands that can help you get information about running and pending jobs, which can guide you in requesting just enough resources next time.
+Here are some other useful [SLURM commands](https://sites.google.com/nyu.edu/nyu-hpc/training-support/general-hpc-topics/slurm-main-commands) that can help you get information about running and pending jobs, which can guide you in requesting just enough resources next time.
 
 ```
 # detailed information for a job:
