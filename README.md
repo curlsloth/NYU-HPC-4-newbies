@@ -1,4 +1,4 @@
-# NYU High Performance Computing (HPC) Tutorial for Newbies 🍼 #
+# High Performance Computing (HPC) Tutorial for Newbies 🍼 #
 
 Andrew Chang [Postdoctoral Fellow, Department of Psychology, New York University]
 
