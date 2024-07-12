@@ -659,15 +659,15 @@ if __name__ == "__main__":
     n = int(sys.argv[1])
 
     for i in range(n*1000, (n+1)*1000):
-       if n%2==0:
-           print_even_number(n)
+       if i%2==0:
+           print_even_number(i)
        else:
-           print_odd_number(n)
+           print_odd_number(i)
     
     sys.exit(0)
 ```
 
-This new script makes each instance loop through 1000 iterations per `n`.
+This new script makes each job instance loop through 1000 iterations per `n`.
 
 When `n=0`, this instance will loop `i` from 0 to 999. When `n=1`, this instance will loop `i` from 1000 to 1999, and so on. Therefore, it is equivalent to running 100k brief instances in parallel, but it is much more manageable. Although the execution time per instance is 1000 times longer, the difference is 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
 
