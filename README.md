@@ -14,7 +14,7 @@ Even though we all know that HPC can speed up our research, I found that most pe
 
 **This tutorial is a lean and lay version of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrated with my own recommendations.** This tutorial covers topics related to data science or data analysis workflows. If you are a computer wizard or witch, this is not for you. If you are interested in knowing all the commands and details, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC systems may have different OS, this tutorial may not apply to other HPCs. Despite my approaches possibly not being the most efficient or correct way to do things, I hope this tutorial can give you a good start in using HPC and boost your productivity!
 
-You will need to know some basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`) to understand this tutorial, as this will be the primary way you interact with HPC (see [here](https://www.codecademy.com/article/command-line-commands) for a tutorial). You have to be familiar with `Conda` commands too, as you will be using that to manage your environment (check out [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions). You don't have to be familiar with `Git/GitHub` or `Python`, but it will be helpful if you have some experience with them.
+You will need to know some basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`, `mkdir`) to understand this tutorial, as this will be the primary way you interact with HPC (see [here](https://www.codecademy.com/article/command-line-commands) for a tutorial). You have to be familiar with `Conda` commands too, as you will be using that to manage your environment (check out [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions). You don't have to be familiar with `Git/GitHub` or `Python`, but it will be helpful if you have some experience with them.
 
 Before starting, you have to request a NYU HPC account. See instructions [here](https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it/hpc-accounts-and-eligibility.html).
 
@@ -533,7 +533,7 @@ squeue -u <NetID>
 Some other useful SLURM commands that can help to get information about running and pending jobs are
 ```
 # detailed information for a job:
-scontrol show jobid -dd <jobid>
+scontrol show jobid -dd <JobID>
 
 # show status of a currently running job
 # (see 'man sstat' for other available JOB STATUS FIELDS)
@@ -541,10 +541,10 @@ sstat --format=TresUsageInMax%80,TresUsageInMaxNode%80 -j <JobID> --allsteps
 
 # get stats for completed jobs 
 # (see 'man sacct' for other JOB ACCOUNTING FIELDS)
-sacct -j <jobid> --format=JobID,JobName,MaxRSS,Elapsed
+sacct -j <JobID> --format=JobID,JobName,MaxRSS,Elapsed
 
 # the same information for all jobs of a user:
-sacct -u <username> --format=JobID,JobName,MaxRSS,Elapsed
+sacct -u <NetID> --format=JobID,JobName,MaxRSS,Elapsed
 ```
 
 When the all the jobs are done, you will receive an email titled something like this "Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]", where "ExitCode 0" means there's no error! "ExitCode 1" means an error.
@@ -592,7 +592,7 @@ module avail
 #...
 ```
 
-For example, if your Python packages related to audio processing require `libsndfile`, you can load it using module load `libsndfile/intel/1.0.31`. Insert this command after module purge in your `.sbatch` file like this:
+For example, if your Python packages related to audio processing require `libsndfile`, you can load it using `module load libsndfile/intel/1.0.31`. Insert this command after module purge in your `.sbatch` file like this:
 
 ```
 module purge
@@ -627,7 +627,7 @@ However, unless your job specifically requires GPU usage and you are highly expe
 
 ### Can I use Jupyter notebook on HPC? ###
 
-Yes, you can use Open OnDemand! Here are the [instructions](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/open-ondemand-ood-with-condasingularity).
+Yes, you can use it via Open OnDemand! Here are the [instructions](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/open-ondemand-ood-with-condasingularity).
 
 I recommend using this GUI to experiment directly with your scripts while utilizing HPC's resources. It can be more effective than testing on your local computer with limited resources or running debugging cycles each time you execute a `.py` file. Once you have a working pipeline, you can reorganize it into a `.py` file for scaling up.
 
