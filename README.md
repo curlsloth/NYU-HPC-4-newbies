@@ -475,13 +475,13 @@ Now you can upload it to HPC `/scratch/<NetID>/pytorch-example/` and then run th
 # Output: 23 is an odd number
 ```
 
-To break it down:
-- `/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash` calls the `.bash` script file.
-- `python` calls the Python interpreter.
-- `/scratch/<NetID>/pytorch-example/print_odd_even.py` is the Python script you are executing.
-- `23` is the numerical input (`n`) for the function. In this example, you can replace `23` with any other integer.
+There are 4 chunks in this line. To break it down:
+1. `/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash` calls the `.bash` script file.
+2. `python` calls the Python interpreter.
+3. `/scratch/<NetID>/pytorch-example/print_odd_even.py` is the Python script you are executing. It corresponds to `sys.argv[0]` in the Python script.
+4.  `23` is the numerical input (`n`) for the function. In this example, you can replace `23` with any other integer. It corresponds to `sys.argv[1]` in the Python script.
 
-Note that `sys.argv[0]` in the Python script represents `/scratch/<NetID>/pytorch-example/print_odd_even.py`, and `sys.argv[1]` represents the input value `23`. All `sys.argv[_]` inputs are automatically read as strings, so numerical inputs need to be converted to integers using `int()`.
+Note that all `sys.argv[_]` inputs are automatically read as strings, so numerical inputs need to be converted to integers using `int()` in your `.py` script (or float using `float()`) .
 
 ## 6. Run the same script on multiple nodes in parallel ##
 
@@ -506,8 +506,6 @@ module purge                          # unload all currently loaded modules in t
 
 Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/sbatch_pytorch-ac8888.s) and upload it to `/scratch/<NetID>/pytorch-example/`.
 
-The `--array=0-99` option means that there will be 100 instances of the script executed, with inputs ranging from 0 to 99. Each instance will be assigned a number stored in `$SLURM_ARRAY_TASK_ID`, and then passed onto the `print_odd_even.py` script as input variable `sys.argv[1]` or `n`.
-
 You can modify the requested resources as needed. However, requesting more resources will increase the queue time. There are also limits on the resources you can request; please refer to [this link](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
 
 Since the script will save output files under `/scratch/<NetID>/pytorch-example/slurm_output/`, ensure you create that folder beforehand by running `mkdir /scratch/<NetID>/pytorch-example/slurm_output`.
@@ -518,6 +516,8 @@ Now you can execute the script by running this command:
 sbatch --array=0-99 /scratch/<NetID>/pytorch-example/sbatch_pytorch-ac8888.s
 # Output: Submitted batch job 48368654
 ```
+
+The `--array=0-99` option means that there will be 100 instances of the script executed, with inputs ranging from 0 to 99. Each instance will be assigned a number stored in `$SLURM_ARRAY_TASK_ID`, and then passed onto the `print_odd_even.py` script as input variable `sys.argv[1]` or `n`.
 
 The job ID is `48368654`.
 
@@ -630,6 +630,50 @@ However, unless your job specifically requires GPU usage and you are highly expe
 Yes, you can use it via Open OnDemand! Here are the [instructions](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/open-ondemand-ood-with-condasingularity).
 
 I recommend using this GUI to experiment directly with your scripts while utilizing HPC's resources. It can be more effective than testing on your local computer with limited resources or running debugging cycles each time you execute a `.py` file. Once you have a working pipeline, you can reorganize it into a `.py` file for scaling up.
+
+### How to design an array job? ###
+
+If you have a job that needs to be executed in 100k instances of the [`print_odd_even.py`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/print_odd_even.py) script, ranging from 0 to 99,999, and each instance only takes 0.1 seconds to run, it may not be a good idea to request `--array=0-99999` as there will be 100k output files! You want to find a balance among quantity, speed, and complexity.
+
+You may want to tweak the script as follows and request `--array=0-99`:
+
+```
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import sys
+
+def print_odd_number(n):
+    print(str(n)+" is an odd number")
+    
+def print_even_number(n):
+    print(str(n)+" is an even number")
+
+if __name__ == "__main__":
+    # Check if the correct number of arguments are provided
+    if len(sys.argv) != 2:
+        print("Usage: python script.py arg1")
+        sys.exit(1)
+
+    # Extract command-line arguments
+    n = int(sys.argv[1])
+
+    for i in range(n*1000, (n+1)*1000):
+       if n%2==0:
+           print_even_number(n)
+       else:
+           print_odd_number(n)
+    
+    sys.exit(0)
+```
+
+Here is the corrected version of your text:
+
+---
+
+This new script makes each instance loop through 1000 iterations per `n`.
+
+For instance, when `n=0`, this instance will loop `i` from 0 to 999. When `n=1`, this instance will loop `i` from 1000 to 1999, and so on. Therefore, it is equivalent to running 100k brief instances in parallel, but it is much more manageable. Although the execution time per instance is 1000 times longer, the difference is 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
 
 ### Best practices ###
 
