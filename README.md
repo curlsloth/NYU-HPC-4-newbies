@@ -1,6 +1,6 @@
 # NYU High Performance Computing (HPC) for Newbies 🍼 #
 
-Andrew Chang, Postdoctoral Fellow, Department of Psychology, New York University
+Andrew Chang [Postdoctoral Fellow, Department of Psychology, New York University]
 
 *Please email me (ac8888@nyu.edu) if you have any suggestions and advice, or spot any errors!*
 
