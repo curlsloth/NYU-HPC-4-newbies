@@ -4,6 +4,9 @@ Andrew Chang, Postdoctoral Fellow, Department of Psychology, New York University
 
 *Please email me (ac8888@nyu.edu) if you have any suggestions and advice!*
 
+![1637077691279](https://github.com/user-attachments/assets/254e2bbd-b710-4e92-ad97-8bc2e52fc1c8)
+[photo source](https://www.nyu.edu/research/navigating-research-technology/stories/greene-supercomputer-anniversary.html)
+
 ## 0. Preface ##
 This is a tutorial for computer muggles who want to use NYU's HPC, **"Greene,"** to analyze their data or fit a machine learning model. It also serves as a note for myself and my colleagues. Feel free to distribute it.
 
