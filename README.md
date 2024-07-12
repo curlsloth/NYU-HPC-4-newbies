@@ -519,7 +519,7 @@ sbatch --array=0-99 /scratch/<NetID>/pytorch-example/sbatch_pytorch-ac8888.s
 
 The job ID is `48368654`.
 
-The `--array=0-99` option means that there will be 100 instances of the script executed, with inputs ranging from 0 to 99. Each instance will be assigned a number stored in `$SLURM_ARRAY_TASK_ID`.
+The `--array=0-99` option means that there will be 100 instances of the script executed, with inputs ranging from 0 to 99. Each instance will be assigned a number stored in `$SLURM_ARRAY_TASK_ID`, and then passed onto the `print_odd_even.py` script as input variable `n`.
 
 You can check the status of all your jobs using this command:
 
