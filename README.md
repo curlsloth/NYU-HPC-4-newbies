@@ -151,7 +151,7 @@ Cloning a GitHub repository to HPC is the same as on your local machine ([instru
 
 > **Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure). You can do this manually if you prefer not to run the script for it. **Future you will thank you!**
 
-## 4. Set up a Replicable Programming Environment using Singularity and Conda ##
+## 4. Set up a replicable programming environment using Singularity and Conda ##
 
 One of the more complex steps in using HPC is setting up the environment and installing all necessary packages. Singularity and Miniconda can simplify this process significantly. While it may take a couple of hours to complete all the steps for the first time, it will become faster and easier.
 
@@ -626,6 +626,12 @@ However, unless your job specifically requires GPU usage and you are highly expe
 Yes, you can use Open OnDemand! Here are the [instructions](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/open-ondemand-ood-with-condasingularity).
 
 I recommend using this GUI to experiment directly with your scripts while utilizing HPC's resources. It can be more effective than testing on your local computer with limited resources or running debugging cycles each time you execute a `.py` file. Once you have a working pipeline, you can reorganize it into a `.py` file for scaling up.
+
+### Best practices ###
+
+I recommend this paper: [Alnasir, J. J. (2021). Fifteen quick tips for success with HPC, ie, responsibly BASHing that Linux cluster. PLOS Computational Biology, 17(8), e1009207.](https://doi.org/10.1371/journal.pcbi.1009207).
+
+Also check out the NYU HPC's website on this topic [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/best-practices).
 
 ## 8. Acknowledgement ##
 
