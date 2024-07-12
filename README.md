@@ -598,6 +598,7 @@ For example, if your Python packages related to audio processing require `libsnd
 module purge
 module load libsndfile/intel/1.0.31
 ```
+### Can I run MATLAB scripts? ###
 
 Yes, you can. Setting up MATLAB on HPC is usually easier than Python, as it typically does not involve Singularity and Conda. You only need to use the module command to load MATLAB.
 
