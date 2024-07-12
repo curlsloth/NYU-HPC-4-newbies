@@ -22,7 +22,7 @@ HPC is a system that you can request the computational resources (CPUs, GPUs, RA
 
 ### If your laptop is your kitchen at home, HPC is a restaurant. ####
 
-While you can cook all kinds of cusines (scripts) in your kitchen at home (laptop), but you only have access to a few stoves (CPUs), you can only cook a small portion (RAM) at a time, and you cannot cook too many cusines in parallel. 
+While you can cook all kinds of cusines (scripts) in your kitchen at home (laptop), but you only have access to a few stoves (CPUs), you can only cook a small portion (RAM) at a time. You don't have access to some specialized equipment (GPU), nor you can cook too many cusines in parallel. HPC is a restaurant which can cook all kinds of cusines. You can assemble multiple cooks (compute nodes) and reserve multiple stoves (CPUs) and specialized equipments (GPUs) to cook multiple dishes at the same time. The benefit of cooking in your kitchen is that you will be the only user. A restaurant can be too busy to host you if cooks are too busy to cook for other customers.
 
 ### You probably want to use HPC if ###
 - insufficient CPUs or RAM in your local machine,
@@ -164,6 +164,8 @@ To keep this tutorial focused on HPC, I am assuming that you are familiar Conda 
 Without Singularity, you don't really have a good place to put your conda environment file in HPC. The `/home` space can only contain a limited number of files, which is barely enough for a conda environment. Despite `/scratch` and `/vast` can contain many files, the files in these two places could be wiped out every 60 days. You don't want to reset your conda environment again and again! 
 
 **Singularity acts like a containor.** For the HPC file system, it is recognized as one single file. But within this containor, you can put as many files as you want, up to it predefined space. Therefore, you can put your Singularity container under `/home` without worrying it exceeding the limit.
+
+**You can even share a copy your singularity `.ext3` file with others to ensure replicability!** Your peers won't need to reinstall the packages you used, which may not even exist in a few years. The only issue is that the `.ext3` file is usually huge, depending on the size you requested.
 
 ### 4-3. Step-by-step guidance ###
 
@@ -482,10 +484,6 @@ Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-ne
 
 You can modify the requested resources as you want. But the more you requested, the longer queue time will be. Also, there's a limit of resource you can request, see [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
 
-Unless your job really needs GPU and you are very experienced with it, I don't recommend requesting for any GPUs (at least not on NYU HPC) for two reasons:
-1. **The queue time will be very long.** GPU is rare and everyone wants to use it. In my experience, the fast computational speed of GPU cannot make up the extra queue time for requesting any GPU. It may be faster by just requesting CPUs.
-2. **NYU HPC will kill the job with low GPU usage.** After a long queue your GPU job finally start running! However, if the GPU usage is much lower than what you requested, you job will be terminated. It may take too much time to trial-and-error on this aspect as you will waste more time in queue.
-
 As the script will save the output under `/scratch/ac8888/pytorch-example/slurm_output/`, you will need to create a folder by running `mkdir /scratch/ac8888/pytorch-example/slurm_output`
 
 Now you can execute the script by running this line:
@@ -550,3 +548,65 @@ cat /scratch/ac8888/pytorch-example/slurm_output/out_48368654_0.out
 cat /scratch/ac8888/pytorch-example/slurm_output/out_48368654_23.out
 # Output: 23 is an odd number
 ```
+
+## 7. Miscellaneous topics ##
+
+### How to "install" other programs or libraries?  ###
+
+HPC uses module system load most software into a user’s environment.
+
+You will probably need it when you process audio files and/or video files
+
+You can use `module avail` to check the available modules on an HPC. There are hundreds on Greene.
+
+```
+module avail
+
+# Output:
+#-------------------------------------------------------- /share/apps/modulefiles ---------------------------------------------------------
+#   abyss/intel/2.3.0                          google-chrome/87.0.4280.88             nwchem/openmpi/intel/7.2.0
+#   admixtools/intel/7.0.2                     google-cloud-sdk/357.0.0               octopus/openmpi/intel/20240311
+#   admixture/1.3.0                            google-cloud-sdk/379.0.0               octopus/openmpi/intel/20240323
+#   advanpix-mct/4.9.3.15018                   googletest/1.10.0                      onetbb/intel/2020.3
+...
+```
+
+You can load the `libsndfile` for processing audio files. Insert `module load libsndfile/intel/1.0.31` following the `module purge` in your .s file as this:
+```
+module purge
+module load libsndfile/intel/1.0.31
+```
+
+### Can I run MATLAB script on HPC? ##
+
+Yes you can, and actually the setup is even easier than Python, as it usually does not involve Singularity and Conda. You only need to use `module` to load MATLAB.
+
+There are a few modifications in your `.s` sbatch file, right below the `#SBATCH` section:
+
+```
+module purge
+module load matlab/2023b # There are many other versions available on Greene you can choose from
+
+matlab -nodisplay -r "your_matlab_function(input_X, $SLURM_ARRAY_TASK_ID); exit;"
+```
+
+Note that executing MATLAB script will always return "COMPLETED, ExitCode [0]", no matter whether it crushed or not! Therefore, make sure that you check the slurm output files.
+
+### How to request GPU? ###
+
+You can add this line into your `.s` sbatch file:
+```
+#SBATCH --gres=gpu:2 # requesting 2 GPUs
+```
+However, requesting many CPUs and no GPU can often be much MUCH faster, if you consider both the queue time and computation time together (at least on Greene that is often the case). 
+
+1. **The queue time will be very long.** GPU is rare and everyone wants to use it. In my experience, the fast computational speed of GPU cannot make up the extra queue time for requesting any GPU. It may be faster by just requesting CPUs.
+2. **NYU HPC will kill the job with low GPU usage.** Even your GPU job finally start running after a long queue, if the GPU usage is much lower than what you requested, you job will be terminated very soon. It may take you too much time to trial-and-error on this aspect as you will waste more time in queue.
+
+Therefore, unless your job really needs GPU and you are very experienced in using it, I don't recommend requesting for any GPUs.
+
+### Can I use Jupyter notebook on HPC? ###
+
+Yes you can do it via Open OnDemand! Here is the [instruction](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/open-ondemand-ood-with-condasingularity).
+
+I recommend to use this GUI to directly experimenting with your script while using the HPC's resources. It can be more effective than experimenting on your local computer with limited resources or run-and-debug everytime executing a .py file. Once you have a working pipeline, you can reorganize it into a .py file for scaling up.
