@@ -5,28 +5,25 @@ Last update: July 11, 2024
 ## 0. Preface ##
 This is a tutorial for computer muggles who wants to use NYU's HPC, **"Greene"**, for their research, which is also a note for myself and my future students. 
 
-Eventhough we all know that HPC can speed up our research, I found that most of people don't want to use it. I guess it is because they worry that they will spend more time on learning HPC then waiting the computation completed on their laptops. This tutorial is designed to mitigate this issue. It will help you set up a reliable and replicable HPC environment within an afternoon, even if you know nothing about computer science.
+Eventhough we all know that HPC can speed up our research, I found that most of people don't want to use it, because they worry that they will spend more time on learning HPC then waiting the computation completed on their laptops. This tutorial is designed to give you quick start. It will help you set up a reliable and replicable HPC environment within one afternoon, even if you are not a computer geek.
 
-This tutorial is a short summary of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrating my own tips. If you are a computer wizard or witch, this might be too easy for you. If you are interested in knowing all the functions and details, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC system may have different OS, this tutorial may not be applied to other HPCs.
+This tutorial is a short summary of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrating with my own tips. If you are a computer wizard or witch, this might be too easy for you. If you are interested in knowing all the commands and details, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC system may have different OS, this tutorial may not be applied to other HPCs. Despite my approaches may not be the most efficient or correct way to do things, hope this tutorial can give you a good start of using HPC and boost your productivity!
 
-Despite my approaches may not be the most efficient or correct way to do things, hope this tutorial can give you a good start of using HPC and boost your productivity!
+You will need to know some basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`) to understand this tutorial. This is a neccesity as this will be the primary way you interact with HPC. But you can quickly learn them starting from [here](https://www.codecademy.com/article/command-line-commands). You don't have to be familiar with `Conda`, `Git/GitHub`, or `Python`, but if will be helpful if you have some experiences with it. This tutorial is written for Mac, and some commands may be slightly different if you are using a PC. 
 
-### Prerequested knowledge ###
-- Basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`). This is a neccesity as this will be the primary way you interact with HPC. But you can quickly learn them starting from [here](https://www.codecademy.com/article/command-line-commands).
-- Git/GitHub (not a neccesity but will be very helpful)
-- Conda (not a neccesity but will be very helpful)
+Before starting, you have to request a NYU HPC account. See instructions [here](https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it/hpc-accounts-and-eligibility.html).
 
 ## 1. What is HPC? Should I use it? ##
 
-HPC is a system that you can request the computational resources (CPUs, GPUs, RAM, nodes) for each computational job, and you can request many sets in parallel.
+HPC is a system that you can request the computational resources (CPUs, GPUs, RAM, nodes) for each computational job, and you can request many jobs in parallel.
 
 ### If your laptop is your kitchen at home, HPC is a restaurant. ####
 
-While you can cook all kinds of cusines (scripts) in your kitchen at home (laptop), but you only have access to a few stoves (CPUs), you can only cook a small portion (RAM) at a time. You don't have access to some specialized equipment (GPU), nor you can cook too many cusines in parallel. HPC is a restaurant which can cook all kinds of cusines. You can assemble multiple cooks (compute nodes) and reserve multiple stoves (CPUs) and specialized equipments (GPUs) to cook multiple dishes at the same time. The benefit of cooking in your kitchen is that you will be the only user. A restaurant can be too busy to host you if cooks are too busy to cook for other customers.
+While you can cook all kinds of cusines (scripts) in your kitchen at home (laptop), but you only have access to a few stoves (CPUs), and you can only cook a small portion (RAM) at a time. You don't have access to some specialized equipments (GPU), nor you can cook too many cusines in parallel. HPC is a restaurant with many cooks and equipments which can cook all kinds of cusines. You can assemble multiple cooks (compute nodes) and reserve multiple stoves (CPUs) and specialized equipments (GPUs) to cook multiple dishes at the same time. However, a downside of a restaurant is that it can be too busy to serve you if the cooks are already busy with serving other customers.
 
 ### You probably want to use HPC if ###
-- insufficient CPUs or RAM in your local machine,
-- you need to run a time-consuming loop, but which can actually be paralleled,
+- you need more CPUs or RAM to do your job,
+- you need to run a time-consuming loop which can be executed independently in parallel,
 - you need to get access to a GPU.
 
 ### The HPC cannot help with ###
@@ -43,52 +40,56 @@ So, I ended up requesting 2000 jobs, each job process 100 files. As a result, it
 If you are using Mac, open your terminal application ([default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.) or [iTerm](https://iterm2.com/)), connect to [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into the Greene by executing this line (keyin and then press enter):
 
 ```
-ssh <NetID>@gw.hpc.nyu.edu
+ssh <NetID>@gw.hpc.nyu.edu 
 ```
-(Replace `<NetID>` with your own. In my case, that will be `ssh ac8888@gw.hpc.nyu.edu`)
+> **Replace `<NetID>` of this tutorial with your own, such as `ab1234`**
 
 It will then ask you to keyin your password. 
 
 If everything is correct, the login node will look something like this 
 ```
-[ac8888@log-3 ~]$
+[<NetID>@log-3 ~]$
 ```
 
-Log into an HPC is like walking into a restaurant. A host (login node) will greet you upfront. Despite that the host of the restaurant is very capable to serve you whatever you want, the host is also busy with greeting other customers. Please do NOT run CPU heavy jobs on login nodes! Therefore, your first step is to tell the host to assign a dedicated waiter (compute node) for you.
+`log-3` is the login node. Please do NOT run CPU heavy jobs on login nodes, and it is serving other users as well. 
 
-Then execute this line: `srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash`, it means that you request the node to have 1 CPU and 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
+Your first step is to request a compute node dedicated to serve you. Execute this line: 
+```
+srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash
+```
+It means that you request the node to have 1 CPU and 10 GB of RAM, and serve you for 4 hours. You can change these parameters to whatever you want. **But the more resources you requested, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
 
-Once you execute that line, you shall wait for a short time, and then will see the terminal displaying this:
+After a short queue, you will see the terminal displaying this:
 
 ```
-[ac8888@log-3 ~]$ srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash
+[<NetID>@log-3 ~]$ srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash
 srun: job 48347520 queued and waiting for resources
 srun: job 48347520 has been allocated resources
-[ac8888@cm015 ~]$
+[<NetID>@cm015 ~]$
 ```
 
-Now you have a waiter (compute node: `cm015`) ready to serve you. 
+Now you have a compute node `cm015` ready to serve you. 
 
-You can ask the waiter to cook a meal for you. For example, execute (type and press enter) this `python`:
+You can call python (type and press enter) by executing this line:
 ```
-[ac8888@cm015 ~]$ python
-Python 3.9.16 (main, Jan  4 2024, 00:00:00)
-[GCC 11.3.1 20221121 (Red Hat 11.3.1-4)] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>>
+python
+# Output:
+# Python 3.9.16 (main, Jan  4 2024, 00:00:00)
+# [GCC 11.3.1 20221121 (Red Hat 11.3.1-4)] on linux
+# Type "help", "copyright", "credits" or "license" for more information.
+# >>>
 ```
-Now you can use Python on HPC the same way as you do on your local machine.
+Now you can run any Python commands following `>>>` on HPC the same way as you do on your local computer.
 
-Congrats! Now you know the core workflow of using HPC. The following sections are all about how to make the process much easier and automatic.
+Congrats! Now you know the core workflow of using HPC. The following sections are all about how to make the process much easier, automatic, replicable and parallel.
 
 > Note that as Greene is Linux based, the command you used will need to be Linux based too.
-
 
 ## 3. HPC data management ##
 
 ### 3-1. Greene storage options ###
 
-There are a few root directories on Greene, and each of them have different specifications for different usage purposes.
+There are a few root directories on Greene, and each of them have different specifications for different purposes.
 
 |Storage  |Disk Space / Number of Files        	  |Backed Up / Flushed	               |Recommendation                                                                                                                 |
 |---------|-----------------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
@@ -99,17 +100,17 @@ There are a few root directories on Greene, and each of them have different spec
 
 You can execute `myquota` command to see the current usage of your storages.
 ```
-[ac8888@log-3 ~]$ myquota
-
-Hostname: log-3 at Thu Jul 11 07:39:37 AM EDT 2024
-
-Filesystem   Environment   Backed up?    Allocation         Current Usage
-Space        Variable      /Flushed?     Space / Files      Space(%) / Files(%)
-
-/home        $HOME         Yes/No        50.0GB/30.0K       46.75GB(93.50%)/13008(43.36%)
-/scratch     $SCRATCH      No/Yes        5.0TB/1.0M         0.97GB(0.02%)/11764(1.18%)
-/archive     $ARCHIVE      Yes/No        2.0TB/20.0K        56.33GB(2.75%)/233(1.16%)
-/vast        $VAST         NO/YES        2TB/5.0M           1.38TB(69.0%)/3454787(69%)
+myquota
+# Output:
+# Hostname: log-3 at Thu Jul 11 07:39:37 AM EDT 2024
+# 
+# Filesystem   Environment   Backed up?    Allocation         Current Usage
+# Space        Variable      /Flushed?     Space / Files      Space(%) / Files(%)
+# 
+# /home        $HOME         Yes/No        50.0GB/30.0K       46.75GB(93.50%)/13008(43.36%)
+# /scratch     $SCRATCH      No/Yes        5.0TB/1.0M         0.97GB(0.02%)/11764(1.18%)
+# /archive     $ARCHIVE      Yes/No        2.0TB/20.0K        56.33GB(2.75%)/233(1.16%)
+# /vast        $VAST         NO/YES        2TB/5.0M           1.38TB(69.0%)/3454787(69%)
 ```
 
 #### Organizing and archieving files ####
@@ -124,32 +125,31 @@ Run this line to uncompress the .tgz file and put it back to `scratch`:
 ```
 tar -xvf /archive/<NetID>/myProject_20240711.tgz /scratch/<NetID>/
 ```
-You will see `/scratch/<NetID>/myProjectFolder` is back.
+You will see the `/scratch/<NetID>/myProjectFolder` folder is back.
 
-Here is an [instruction](https://support.apple.com/guide/terminal/compress-and-uncompress-file-archives-apdc52250ee-4659-4751-9a3a-8b7988150530/mac) on how to tar archieve a folder using Mac/Linux.
+Here is an [instruction](https://support.apple.com/guide/terminal/compress-and-uncompress-file-archives-apdc52250ee-4659-4751-9a3a-8b7988150530/mac) on how to tar archieve a folder on Mac/Linux.
 
 ### 3-2. Data transfer ###
 
-According to NYU HPC's [website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers), there are number of ways to transfer data to HPC. But I am only introduce the two ways that I recommend.
+According to NYU HPC's [website](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers), there are number of ways to transfer data to HPC. Here I introduce the two ways that I recommend.
 
 #### Use Globus to transfer big data files ####
 
 Globus has a browser-based user interface to transfer the files. It is very intuitive to use and features automatic error monitoring. See [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/data-management/data-transfers/globus) for the instruction. 
 
-However, Globus can be really slow if you are transfer a large quantitive of files. In that case, you can simply compress the entire folder on the local machine as one tar file , upload that one tar file using globus, and uncompress on HPC. 
+However, Globus can be really slow if you are transfer a large quantitive of files. In that case, you can simply compress the entire folder on the local machine as one tar file, upload that one tar file using globus, and uncompress on HPC. 
 
 #### Use GitHub to transfer scripts (and a small number of small-sized data files) ####
 
-Synchronizing often changed files (i.e., script files) manually using Globus can be error-prone. Also, transferring a large number of small files can be very slow via Globus. Therefore, I recommend synchronizing your scripts (and maybe a small number of small-sized data files) using GitHub. 
+Manually synchronizing script files using Globus can be error-prone, as you can easily loose track. Also, again, transferring a large number of small files can be very slow via Globus. Therefore, I recommend synchronizing your scripts (and maybe a small number of small-sized data files) using GitHub. Just like you are working on the same project on two computers.
 
-Yes, you can clone a GitHub repository to HPC the same way as you do on your local machine ([instruction](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)). Just remember to [`.gitignore`](https://www.w3schools.com/git/git_ignore.asp) your data folder and anything you don't want to share. 
+Clone a GitHub repository to HPC is the same as you do on your local machine ([instruction](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)). Just remember to [`.gitignore`](https://www.w3schools.com/git/git_ignore.asp) your data folder and anything else you don't want to share. 
 
-> **Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure), which is an intuitive way to separate your scripts, data and many other files. (You can manually do it if you don't want to run another script for it.) **The future you will thank you!**
- 
+> **Tip:** I strongly recommend organizing your project files following the [cookiecutter-data-science template](https://github.com/drivendataorg/cookiecutter-data-science#the-resulting-directory-structure). You can manually do it if you don't want to run the script for it. **The future you will thank you!**
 
 ## 4. Set up replicable programming environment using Singularity and Conda ##
 
-Probably the most complicated step to use HPC is to replicate the environment and install all the related packages on it. But this is not an issue if you use Singularity and Miniconda to setup the environment. 
+Probably the most complicated step to use HPC is to create the environment and install all the packages. Singularity and Miniconda can make it much easier. It may take you a couple of hours to do all the steps for the first time, but it will get much easier and faster very soon.
 
 ### 4-1. Use Conda to manage environment ###
 
@@ -161,11 +161,11 @@ To keep this tutorial focused on HPC, I am assuming that you are familiar Conda 
 
 [Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html) is a container platform specifically designed for HPC, and it has become widely used in many HPC systems and has become a standard.
 
-Without Singularity, you don't really have a good place to put your conda environment file in HPC. The `/home` space can only contain a limited number of files, which is barely enough for a conda environment. Despite `/scratch` and `/vast` can contain many files, the files in these two places could be wiped out every 60 days. You don't want to reset your conda environment again and again! 
+Without Singularity, you don't really have a good place to put your conda environment file in HPC. The `/home` space can only contain a limited number of files, which may not be enough to host all the packages. Despite `/scratch` and `/vast` can contain many files, these places will be wiped out regularily. You don't want to reset your conda environment again and again! 
 
-**Singularity acts like a containor.** For the HPC file system, it is recognized as one single file. But within this containor, you can put as many files as you want, up to it predefined space. Therefore, you can put your Singularity container under `/home` without worrying it exceeding the limit.
+**Singularity acts like a containor.** It is recognized as one single file by the HPC file system. But within this containor, you can put as many files as you want, up to it predefined space. Therefore, you can put your Singularity container under `/home` without worrying it exceeding the limit of the number of files.
 
-**You can even share a copy your singularity `.ext3` file with others to ensure replicability!** Your peers won't need to reinstall the packages you used, which may not even exist in a few years. The only issue is that the `.ext3` file is usually huge, depending on the size you requested.
+**You can even share a copy your singularity `.ext3` file with others to ensure replicability!** Your peers won't need to reinstall the packages you used, which may not even available in a few years. The only issue is that the `.ext3` file is usually huge, depending on the size you initially requested.
 
 ### 4-3. Step-by-step guidance ###
 
@@ -328,7 +328,7 @@ Why creating a conda environment within a image which is already dedicated for a
 
 You can even export a `.yaml` file listing all the packages and versions you use on your local computer, upload it the onto HPC, and use it to create a conda environment. This way will replicate the exact same environment on HPC. 
 
-Use Globus to upload the '.yaml' [file](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/pytorch-ac8888_20240711.yaml) to `/scratch/ac8888/pytorch-example/`, and then run the following line:
+Use Globus to upload the '.yaml' [file](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/pytorch-ac8888_20240711.yaml) to `/scratch/<NetID>/pytorch-example/`, and then run the following line:
 
 ```
 conda env create -f environment.yml
@@ -368,7 +368,7 @@ However, if you want to further modify the image, you have to change it into `:r
 ## 5. Quick run a Python script using `.bash` ##
 
 ### 5-1. Make a `.bash` script ###
-To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer named `run-pytorch-ac8888.bash` and upload it to HPC `/scratch/ac8888/pytorch-example/`. The file should look something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
+To simplify the steps required to access the conda environment in the image, you can create a `.bash` file like below on your computer named `run-pytorch-ac8888.bash` and upload it to HPC `/scratch/<NetID>/pytorch-example/`. The file should look something like [this](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
 
 (Remember: replace `<NetID>` with your own.)
 
@@ -400,12 +400,12 @@ ${args}
 
 To make this script executable, run this command
 ```
-chmod 755  /scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash
+chmod 755  /scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash
 ```
 
 Now you can access to the conda environment simply by running:
 ```
-/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash
+/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash
 ```
 
 Check whether you are under the `pytorch-ac8888` environment, and the `*` sign indicate the currently activated environment:
@@ -450,15 +450,15 @@ if __name__ == "__main__":
     sys.exit(0)
 ```
 
-Now you can upload it to HPC `/scratch/ac8888/pytorch-example/`, and the run the line below:
+Now you can upload it to HPC `/scratch/<NetID>/pytorch-example/`, and the run the line below:
 
 ```
-/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 23
+/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 23
 # Output: 23 is an odd number
 ```
-To break it down, `/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash` is the `.bash` command, `python` calls the python program, `/scratch/ac8888/pytorch-example/print_odd_even.py` is the .py script we are executing, and `23` is the numberical input of the function as `n`. You can replace `23` with any other integers.
+To break it down, `/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash` is the `.bash` command, `python` calls the python program, `/scratch/<NetID>/pytorch-example/print_odd_even.py` is the .py script we are executing, and `23` is the numberical input of the function as `n`. You can replace `23` with any other integers.
 
-Note that the `sys.argv[0]` is the script `/scratch/ac8888/pytorch-example/print_odd_even.py`, and the `sys.argv[1]` is the input `1`. The `sys.argv[_]` input will be automatically read as a string, so your numerical input will need to be converted into number by using `int()`.
+Note that the `sys.argv[0]` is the script `/scratch/<NetID>/pytorch-example/print_odd_even.py`, and the `sys.argv[1]` is the input `1`. The `sys.argv[_]` input will be automatically read as a string, so your numerical input will need to be converted into number by using `int()`.
 
 ## 6. Run the same script in parallel ##
 
@@ -472,42 +472,42 @@ One of the biggest advantage of using HPC is that you can run the same scripts i
 #SBATCH --cpus-per-task=1             # Request 1 CPU
 #SBATCH --mem=2GB                     # Request 2GB of RAM
 #SBATCH --time=00:10:00               # Request 10 mins
-#SBATCH --output=/scratch/ac8888/pytorch-example/slurm_output/out_%A_%a.out  # The output will be saved here. %A will be replaced by the slurm job ID, and %a will be replaced by the SLURM_ARRAY_TASK_ID
-#SBATCH --mail-user=ac8888@nyu.edu    # Email address
+#SBATCH --output=/scratch/<NetID>/pytorch-example/slurm_output/out_%A_%a.out  # The output will be saved here. %A will be replaced by the slurm job ID, and %a will be replaced by the SLURM_ARRAY_TASK_ID
+#SBATCH --mail-user=<NetID>@nyu.edu   # Email address
 #SBATCH --mail-type=END               # Send an email when the job end
 
 module purge                          # unload all currently loaded modules in the environment
 
-/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py $SLURM_ARRAY_TASK_ID
+/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py $SLURM_ARRAY_TASK_ID
 ```
-Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/sbatch_pytorch-ac8888.s) and upload it to `/scratch/ac8888/pytorch-example/`.
+Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/sbatch_pytorch-ac8888.s) and upload it to `/scratch/<NetID>/pytorch-example/`.
 
 You can modify the requested resources as you want. But the more you requested, the longer queue time will be. Also, there's a limit of resource you can request, see [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
 
-As the script will save the output under `/scratch/ac8888/pytorch-example/slurm_output/`, you will need to create a folder by running `mkdir /scratch/ac8888/pytorch-example/slurm_output`
+As the script will save the output under `/scratch/<NetID>/pytorch-example/slurm_output/`, you will need to create a folder by running `mkdir /scratch/<NetID>/pytorch-example/slurm_output`
 
 Now you can execute the script by running this line:
 ```
-sbatch --array=0-99 /scratch/ac8888/pytorch-example/sbatch_pytorch-ac8888.s
+sbatch --array=0-99 /scratch/<NetID>/pytorch-example/sbatch_pytorch-ac8888.s
 # output: Submitted batch job 48368654
 ```
 The job ID is `48368654`.
 
 The `--array=0-99` means that there will be 100 copies of the script being executed, with input ranging from 0 to 99. Which is equivalent to running these lines individually:
 ```
-/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 0
-/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 1
-/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 2
+/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 0
+/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 1
+/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 2
 ...
-/scratch/ac8888/pytorch-example/run-pytorch-ac8888.bash python /scratch/ac8888/pytorch-example/print_odd_even.py 99
+/scratch/<NetID>/pytorch-example/run-pytorch-ac8888.bash python /scratch/<NetID>/pytorch-example/print_odd_even.py 99
 ```
 
 You can check the status of all your jobs using this line:
 ```
-squeue -u ac8888
+squeue -u <NetID>
 # Output: 
 #             JOBID PARTITION     NAME     USER ST       TIME  NODES
-#   48368654_[0-99] short,cs,  testrun   ac8888 PD       0:00      1 
+#   48368654_[0-99] short,cs,  testrun  <NetID> PD       0:00      1 
 ```
 
 Some other useful SLURM commands that can help to get information about running and pending jobs are
@@ -531,7 +531,7 @@ When the all the job is done, you will get an email titled something like this "
 
 You can list all the output file using `ls` command by executing this:
 ```
-ls /scratch/ac8888/pytorch-example/slurm_output/
+ls /scratch/<NetID>/pytorch-example/slurm_output/
 # out_48368654_0.out   out_48368654_25.out  out_48368654_40.out  out_48368654_56.out  out_48368654_71.out  out_48368654_87.out
 # out_48368654_10.out  out_48368654_26.out  out_48368654_41.out  out_48368654_57.out  out_48368654_72.out  out_48368654_88.out
 # out_48368654_11.out  out_48368654_27.out  out_48368654_42.out  out_48368654_58.out  out_48368654_73.out  out_48368654_89.out
@@ -542,14 +542,16 @@ ls /scratch/ac8888/pytorch-example/slurm_output/
 
 You can check a file by using `cat` command:
 ```
-cat /scratch/ac8888/pytorch-example/slurm_output/out_48368654_0.out
+cat /scratch/<NetID>/pytorch-example/slurm_output/out_48368654_0.out
 # Output: 0 is an even number
 
-cat /scratch/ac8888/pytorch-example/slurm_output/out_48368654_23.out
+cat /scratch/<NetID>/pytorch-example/slurm_output/out_48368654_23.out
 # Output: 23 is an odd number
 ```
 
 ## 7. Miscellaneous topics ##
+
+There are too many topics of HPC. Here I only cover the ones that I have had deal with.
 
 ### How to "install" other programs or libraries?  ###
 
