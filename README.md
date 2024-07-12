@@ -14,7 +14,7 @@ Even though we all know that HPC can speed up our research, I found that most pe
 
 **This tutorial is a lean and lay version of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrated with my own recommendations.** This tutorial covers topics related to data science or data analysis workflows. If you are a computer wizard or witch, this is not for you. If you are interested in knowing all the commands and details, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC systems may have different OS, this tutorial may not apply to other HPCs. Despite my approaches possibly not being the most efficient or correct way to do things, I hope this tutorial can give you a good start in using HPC and boost your productivity!
 
-You will need to know some basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`) to understand this tutorial, as this will be the primary way you interact with HPC (see [here](https://www.codecademy.com/article/command-line-commands) for a tutorial). You have to be familiar with `Conda` commands too, as you will be using that to manage your environment (check out [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions). You don't have to be familiar with `Git/GitHub` or `Python`, but it will be helpful if you have some experience with them. This tutorial is written for Mac, and some commands may be slightly different if you are using a PC.
+You will need to know some basic command line commands (such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`) to understand this tutorial, as this will be the primary way you interact with HPC (see [here](https://www.codecademy.com/article/command-line-commands) for a tutorial). You have to be familiar with `Conda` commands too, as you will be using that to manage your environment (check out [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions). You don't have to be familiar with `Git/GitHub` or `Python`, but it will be helpful if you have some experience with them.
 
 Before starting, you have to request a NYU HPC account. See instructions [here](https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it/hpc-accounts-and-eligibility.html).
 
@@ -43,10 +43,11 @@ So, I ended up requesting 2000 jobs, each job processing 100 files. As a result,
 ## 2. Your first step of using HPC! ##
 ### 2-1. What is HPC? ###
 
-If you are using a Mac, open your terminal application ([default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.)) or [iTerm](https://iterm2.com/), connect to the [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into Greene by executing this line (key in and then press enter):
+Open your terminal application [Mac default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.), [PC default](https://learn.microsoft.com/en-us/windows/terminal/) or [iTerm for Mac (recommended)](https://iterm2.com/), connect to the [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into Greene by executing this line (key in and then press enter):
 
 ```
-ssh <NetID>@gw.hpc.nyu.edu 
+ssh <NetID>@gw.hpc.nyu.edu ## you can skip this step if you are on the NYU network or using the NYU VPN
+ssh <NetID>@greene.hpc.nyu.edu
 ```
 > **Replace `<NetID>` of this tutorial with your own, such as `ab1234`**
 
