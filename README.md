@@ -40,7 +40,7 @@ I once needed to analyze 200k audio files, and the process on each file would ta
 So, I ended up requesting 2000 jobs, each job processing 100 files. As a result, it took less than 2 hours to complete all the jobs, including the queue time ⚡️!
 
 
-## 2. Your first step of using HPC! ##
+## 2. Your first step in using HPC! ##
 ### 2-1. What is HPC? ###
 
 Open your terminal application [Mac default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.), [PC default](https://learn.microsoft.com/en-us/windows/terminal/) or [iTerm for Mac (recommended)](https://iterm2.com/), connect to the [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into Greene by executing this line (key in and then press enter):
