@@ -506,6 +506,8 @@ module purge                          # unload all currently loaded modules in t
 
 Save it as [`sbatch_pytorch-ac8888.s`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/sbatch_pytorch-ac8888.s) and upload it to `/scratch/<NetID>/pytorch-example/`.
 
+The `--array=0-99` option means that there will be 100 instances of the script executed, with inputs ranging from 0 to 99. Each instance will be assigned a number stored in `$SLURM_ARRAY_TASK_ID`, and then passed onto the `print_odd_even.py` script as input variable `sys.argv[1]` or `n`.
+
 You can modify the requested resources as needed. However, requesting more resources will increase the queue time. There are also limits on the resources you can request; please refer to [this link](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/best-practices?authuser=0#h.p_ID_142).
 
 Since the script will save output files under `/scratch/<NetID>/pytorch-example/slurm_output/`, ensure you create that folder beforehand by running `mkdir /scratch/<NetID>/pytorch-example/slurm_output`.
@@ -518,8 +520,6 @@ sbatch --array=0-99 /scratch/<NetID>/pytorch-example/sbatch_pytorch-ac8888.s
 ```
 
 The job ID is `48368654`.
-
-The `--array=0-99` option means that there will be 100 instances of the script executed, with inputs ranging from 0 to 99. Each instance will be assigned a number stored in `$SLURM_ARRAY_TASK_ID`, and then passed onto the `print_odd_even.py` script as input variable `sys.argv[1]` or `n`.
 
 You can check the status of all your jobs using this command:
 
