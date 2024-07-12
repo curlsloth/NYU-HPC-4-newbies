@@ -571,7 +571,7 @@ module avail
 ...
 ```
 
-For example, your python audio-related packages may need to use the `libsndfile` for processing audio files. Simply insert `module load libsndfile/intel/1.0.31` following the `module purge` in your .s file as this:
+For example, your python audio-related packages may need to use the `libsndfile` (or anything as named as one of the module in the output of `module avail`) for processing audio files. Simply insert `module load libsndfile/intel/1.0.31` following the `module purge` in your .s file as this:
 ```
 module purge
 module load libsndfile/intel/1.0.31
