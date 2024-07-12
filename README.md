@@ -548,7 +548,7 @@ sacct -j <JobID> --format=JobID,JobName,MaxRSS,Elapsed
 sacct -u <NetID> --format=JobID,JobName,MaxRSS,Elapsed
 ```
 
-When the all the jobs are done, you will receive an email titled something like this "Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]", where "ExitCode 0" means there's no error! "ExitCode 1" means an error.
+When the all the jobs are done, you will receive an email titled something like this `Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]`, where `ExitCode 0` means there's no error! `ExitCode 1` means an error. `ExitCode [0-1]` means some instances have no error while some have.
 
 You can list all the output files in the `/scratch/<NetID>/pytorch-example/slurm_output/` directory using the `ls` command:
 ```
