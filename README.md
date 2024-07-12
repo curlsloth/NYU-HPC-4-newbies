@@ -635,7 +635,7 @@ I recommend using this GUI to experiment directly with your scripts while utiliz
 
 If you have a job that needs to be executed in 100k instances of the [`print_odd_even.py`](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/print_odd_even.py) script, ranging from 0 to 99,999, and each instance only takes 0.1 seconds to run, it may not be a good idea to request `--array=0-99999` as there will be 100k output files! You want to find a balance among quantity, speed, and complexity.
 
-You may want to tweak the script as follows and request `--array=0-99`:
+You may want to tweak the script as follows and request `sbatch` job with `--array=0-99`:
 
 ```
 #!/usr/bin/env python3
@@ -666,10 +666,6 @@ if __name__ == "__main__":
     
     sys.exit(0)
 ```
-
-Here is the corrected version of your text:
-
----
 
 This new script makes each instance loop through 1000 iterations per `n`.
 
