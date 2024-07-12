@@ -491,13 +491,13 @@ One of the biggest advantages of using HPC is that you can run the same script o
 #!/bin/bash
 
 #SBATCH --job-name=testrun            # The name of the job
-#SBATCH --nodes=1                     # Request 1 compute node
-#SBATCH --cpus-per-task=1             # Request 1 CPU
-#SBATCH --mem=2GB                     # Request 2GB of RAM
-#SBATCH --time=00:10:00               # Request 10 mins
+#SBATCH --nodes=1                     # Request 1 compute node per job instance
+#SBATCH --cpus-per-task=1             # Request 1 CPU per job instance
+#SBATCH --mem=2GB                     # Request 2GB of RAM per job instance
+#SBATCH --time=00:10:00               # Request 10 mins per job instance
 #SBATCH --output=/scratch/<NetID>/pytorch-example/slurm_output/out_%A_%a.out  # The output will be saved here. %A will be replaced by the slurm job ID, and %a will be replaced by the SLURM_ARRAY_TASK_ID
 #SBATCH --mail-user=<NetID>@nyu.edu   # Email address
-#SBATCH --mail-type=END               # Send an email when the job end
+#SBATCH --mail-type=END               # Send an email when all the instances of this job are completed
 
 module purge                          # unload all currently loaded modules in the environment
 
