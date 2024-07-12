@@ -670,7 +670,7 @@ if __name__ == "__main__":
 
 This new script makes each job instance loop through 1000 iterations per `n`.
 
-When `n=0`, this instance will loop `i` from 0 to 999. When `n=1`, this instance will loop `i` from 1000 to 1999, and so on. Therefore, it is equivalent to running 100k brief instances in parallel, but it is much more manageable. Although the execution time per instance is 1000 times longer, the difference is 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
+When `n=0`, this instance will loop `i` from 0 to 999. When `n=1`, this instance will loop `i` from 1000 to 1999, and so on. Therefore, it is equivalent to running 100k brief instances in parallel, but it is much more manageable with only 100 job instances. Although the execution time per instance is 1000 times longer, the difference is just 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
 
 ### Best practices ###
 
