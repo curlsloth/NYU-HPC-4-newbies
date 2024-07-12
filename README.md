@@ -128,7 +128,7 @@ Run this line to compress the folder and save it under `/archive`:
 ```
 tar -czvf /archive/<NetID>/myProject_20240711.tgz /scratch/<NetID>/myProjectFolder
 ```
-Run this line to uncompress the .tgz file and put it back to `scratch`:
+Run this line to uncompress the .tgz file and put it back to `/scratch`:
 ```
 tar -xvf /archive/<NetID>/myProject_20240711.tgz /scratch/<NetID>/
 ```
