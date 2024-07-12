@@ -607,7 +607,7 @@ Make a few modifications in your `.sbatch` file right below the `#SBATCH` sectio
 module purge
 module load matlab/2023b # There are many other versions available on Greene you can choose from
 
-matlab -nodisplay -r "your_matlab_function(input_X, $SLURM_ARRAY_TASK_ID); exit;"
+matlab -nodisplay -r "your_matlab_function($SLURM_ARRAY_TASK_ID); exit;"
 ```
 
 Note that executing a MATLAB script will always return "COMPLETED, ExitCode [0]", regardless of whether it crashed or not. Therefore, make sure to check the SLURM output files for accurate status.
