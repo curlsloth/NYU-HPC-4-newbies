@@ -485,7 +485,9 @@ Note that all `sys.argv[_]` inputs are automatically read as strings, so numeric
 
 ## 6. Run the same script on multiple nodes in parallel ##
 
-One of the biggest advantages of using HPC is that you can run the same script on multiple nodes in parallel. This can be easily achieved using SLURM batch jobs:
+### 6-1. Submit a job array ###
+
+One of the biggest advantages of using HPC is that you can run the same script on multiple nodes in parallel. Using job array you may submit many similar jobs with almost identical job requirement. This can be easily achieved using SLURM batch jobs:
 
 ```
 #!/bin/bash
@@ -521,6 +523,8 @@ The `--array=0-99` option means that there will be 100 instances of the script e
 
 The job ID is `48368654`.
 
+### 6-2. Check the current status of my jobs ###
+
 You can check the status of all your jobs using this command:
 
 ```
@@ -547,6 +551,8 @@ sacct -j <JobID> --format=JobID,JobName,MaxRSS,Elapsed
 # the same information for all jobs of a user:
 sacct -u <NetID> --format=JobID,JobName,MaxRSS,Elapsed
 ```
+
+### 6-3. Check the output of my jobs ###
 
 When the all the jobs are done, you will receive an email titled something like this `Slurm Array Summary Job_id=48368654_* (48368654) Name=testrun Ended, COMPLETED, ExitCode [0-0]`, where `ExitCode 0` means there's no error! `ExitCode 1` means an error. `ExitCode [0-1]` means some instances have no error while some have.
 
