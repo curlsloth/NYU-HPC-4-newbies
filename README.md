@@ -28,6 +28,9 @@ HPC is a system where you can request computational resources (CPUs, GPUs, RAM, 
 
 While you can cook all kinds of cuisines (scripts) in your kitchen at home (laptop), you only have access to a few stoves (CPUs), and you can only cook a small portion (RAM) at a time. You don't have access to some specialized equipment (GPU), and you are the only cook (compute node). HPC is a restaurant with many cooks and equipment which can cook all kinds of cuisines. You can assemble multiple cooks (compute nodes) and reserve multiple stoves (CPUs) and specialized equipment (GPUs) to cook multiple dishes at the same time. However, a downside of a restaurant is that it can be too busy to serve you if the cooks are already busy with other customers.
 
+![image](https://github.com/user-attachments/assets/923b2f95-7556-4102-ad30-9e227f2223af)
+[photo source: Overcooked](https://store.steampowered.com/app/448510/Overcooked/)
+
 ### You probably want to use HPC if ###
 - You need more CPUs or RAM to do your job.
 - You need to run a time-consuming loop that can be executed independently in parallel.
