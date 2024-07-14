@@ -15,7 +15,7 @@ Even though we all know that HPC can speed up our research, I found that most pe
 
 **This tutorial is a lean and lay version of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrated with my own recommendations.** This tutorial covers topics related to data science or data analysis workflows. If you are a computer wizard or witch 🧙‍♀️🧙, this is not for you. If you are interested in knowing all the commands and details like Hermione Granger 📚, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC systems may have different OS, this tutorial may not apply to other HPCs. Despite my approaches possibly not being the most efficient or correct way to do things, I hope this tutorial can give you a good start in using HPC and boost your productivity!
 
-**Prerequesite:** 
+### Prerequisite
 - You have to request a NYU HPC account. See instructions [here](https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it/hpc-accounts-and-eligibility.html).
 - Familiar with basic command line commands, such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`, `mkdir`. Command line will be the primary way you interact with HPC (see [here](https://www.codecademy.com/article/command-line-commands) for a tutorial).
 - Familiar with `Conda` commands. You will uses them to manage your environment (check out [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions).
