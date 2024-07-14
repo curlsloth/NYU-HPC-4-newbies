@@ -371,7 +371,7 @@ find /ext3 | wc -l
 du -sh  /ext3        
 # output should be something like 6.0G    /ext3
 ```
-Now, exit the Singularity container and then rename the overlay image. Typing `exit'`and hitting enter will exit the Singularity container if you are currently inside it. You can tell if you're in a Singularity container because your prompt will be different, such as showing the prompt `Singularity>`
+Now, exit the Singularity container and then rename the overlay image. Typing `exit`and hitting enter will exit the Singularity container if you are currently inside it. You can tell if you're in a Singularity container because your prompt will be different, such as showing the prompt `Singularity>`
 ```
 exit
 mv overlay-15GB-500K.ext3 my_pytorch.ext3
