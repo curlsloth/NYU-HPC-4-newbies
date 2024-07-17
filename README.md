@@ -686,13 +686,10 @@ This new script makes each job instance loop through 1000 iterations per `n`. Wh
 
 Although the execution time per instance is 1000 times longer, the difference is just 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
 
-### Can I submit my job directly to HPC via Python on my local computer? ###
+### Other packages that make HPC even easier ###
 
-Yes, you can. [`submitit`](https://github.com/facebookincubator/submitit/) is a Python package designed for this purpose.
-
-Note that as this package was developed by Facebook (Meta) primarily for their internal use, it may not be applicable to other HPCs. I have never tried it myself, but let me know if it works on the NYU HPC.
-
-*Thank [Jean-Rémi King](https://kingjr.github.io/) for suggesting this package!*
+- [`submitit`](https://github.com/facebookincubator/submitit/) is a Python package designed for submitting your HPC job from your local computer via Python. Note that as this package was developed by Facebook (Meta) primarily for their internal use, it may not be applicable to other HPC systems. I have never tried it myself, but let me know if it works on the NYU HPC. *Thank [Jean-Rémi King](https://kingjr.github.io/) for suggesting this package!*
+- [`singuconda`](https://github.com/beasteers/singuconda) is a package that makes setting up `Singularity` overlays with `miniconda` much easier and faster. *Thank [Bea Steers](https://beasteers.com/) for making this package and [Iran R. Roman](https://iranroman.github.io/) for the recommendation!*
 
 ### Best practices ###
 
