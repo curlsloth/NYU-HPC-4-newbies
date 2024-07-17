@@ -686,6 +686,14 @@ This new script makes each job instance loop through 1000 iterations per `n`. Wh
 
 Although the execution time per instance is 1000 times longer, the difference is just 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
 
+### Can I submit my job directly to HPC via Python on my local computer? ###
+
+Yes, you can. [`submitit`](https://github.com/facebookincubator/submitit/) is a Python package designed for this purpose.
+
+Note that as this package was developed by Facebook (Meta) primarily for their internal use, it may not be applicable to other HPCs. I have never tried it myself, but let me know if it works on the NYU HPC.
+
+*Thank [Jean-Rémi King](https://kingjr.github.io/) for suggesting this package!*
+
 ### Best practices ###
 
 I recommend this paper: [Alnasir, J. J. (2021). Fifteen quick tips for success with HPC, ie, responsibly BASHing that Linux cluster. PLOS Computational Biology, 17(8), e1009207.](https://doi.org/10.1371/journal.pcbi.1009207).
