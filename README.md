@@ -553,10 +553,10 @@ sstat --format=TresUsageInMax%80,TresUsageInMaxNode%80 -j <JobID> --allsteps
 
 # get stats for completed jobs 
 # (see 'man sacct' for other JOB ACCOUNTING FIELDS)
-sacct -j <JobID> --format=JobID,JobName,MaxRSS,Elapsed
+sacct --units=G --format=User,JobID%24,Jobname,state,time,start,end,elapsed,TotalCPU,ReqMem,MaxRss,MaxVMSize,nnodes,ncpus,nodelist -j <JobID>
 
 # the same information for all jobs of a user:
-sacct -u <NetID> --format=JobID,JobName,MaxRSS,Elapsed
+sacct --units=G --format=User,JobID%24,Jobname,state,time,start,end,elapsed,TotalCPU,ReqMem,MaxRss,MaxVMSize,nnodes,ncpus,nodelist -u <NetID>
 ```
 
 ### 6-3. Check the output of my jobs ###
