@@ -395,7 +395,7 @@ If you need to make further modifications to the environment, you will need to c
 To simplify the steps required to access the Conda environment in the image, you can create a `.bash` file on your computer named `run-pytorch-ac8888.bash` and upload it to the directory `/scratch/<NetID>/pytorch-example/`. The file should resemble [this example](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/run-pytorch-ac8888.bash).
 
 
-```
+```bash
 #!/bin/bash
 
 args=''
