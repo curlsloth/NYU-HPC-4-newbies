@@ -31,7 +31,7 @@ While you can cook all kinds of cuisines (scripts) in your kitchen at home (lapt
 
 ![image](https://github.com/user-attachments/assets/923b2f95-7556-4102-ad30-9e227f2223af)
 
-[source: overcooked ](https://store.steampowered.com/app/448510/Overcooked/) (Perhaps this is the real appearance of HPC at work?)
+[Source: overcooked ](https://store.steampowered.com/app/448510/Overcooked/) (Perhaps this is the real appearance of HPC at work?)
 
 ### You probably want to use HPC if ###
 - You need more CPUs or RAM to do your job.
@@ -446,7 +446,7 @@ The `*` sign indicates the currently activated environment.
 
 Here is a simple Python script `print_odd_even.py` for demonstration purposes, which can be downloaded [here](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/print_odd_even.py):
 
-```
+```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -651,7 +651,7 @@ If you have a job that needs to be executed in 100k instances of the [`print_odd
 
 You may want to tweak the script as follows and request `sbatch` job with `--array=0-99`:
 
-```
+```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -685,6 +685,21 @@ if __name__ == "__main__":
 This new script makes each job instance loop through 1000 iterations per `n`. When `n=0`, this instance will loop `i` from 0 to 999. When `n=1`, this instance will loop `i` from 1000 to 1999, and so on. Therefore, it is equivalent to running 100k brief instances in parallel, but it is much more manageable with only 100 job instances. 
 
 Although the execution time per instance is 1000 times longer, the difference is just 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
+
+### Can I automatically execute git command for each job?
+
+Yes, you can. You can use the `subprocess` function to execute your Git commands.
+
+```python
+import subprocess
+subprocess.run(['git', 'add', 'your/path/to/be/committed'], check=True)
+subprocess.run(['git', 'commit', '-m', 'your commit message'], check=True)
+subprocess.run(['git', 'push'], check=True)
+```
+
+The `check` parameter is a boolean value that indicates whether to check the return code of the subprocess. If `check` is set to `True` and the return code is non-zero, a `CalledProcessError` will be raised.
+
+Note that when running an array job with Git commands targeting the same directory, it may cause conflicts, as multiple jobs may execute the Git commands simultaneously. Make sure to add different paths to avoid this.
 
 ### Other packages that make HPC even easier ###
 
