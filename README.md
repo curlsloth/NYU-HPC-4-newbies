@@ -686,7 +686,7 @@ This new script makes each job instance loop through 1000 iterations per `n`. Wh
 
 Although the execution time per instance is 1000 times longer, the difference is just 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
 
-### Can I automatically execute git command for each job?
+### Can I automatically execute git commands for each job?
 
 Yes, you can. You can use the `subprocess` function to execute your Git commands.
 
