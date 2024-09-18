@@ -701,6 +701,13 @@ The `check` parameter is a boolean value that indicates whether to check the ret
 
 Note that when running an array job with Git commands targeting the same directory, it may cause conflicts, as multiple jobs may execute the Git commands simultaneously. Make sure to add different paths to avoid this.
 
+### How to preserve data from being flushed? ###
+
+As NYU HPC regularly removes files that have not been accessed for a while, it is important to correctly preserve your data. For projects that have been completed, you should tar the files and deposit them in `/archive` or on your local computer.
+
+However, for projects you are still working on, tarring all the files and then untarring them may not be the best approach. Instead, I wrote a `python` [script](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/touch_files.py) that automatically accesses all the files in a path, which will reset the access time for each file. Note that this approach will only change the files' access time, not the modification time. Additionally, here is a `sbatch` [script](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/touch_python.s) to run the `python` script.
+
+
 ### Other packages that make HPC even easier ###
 
 - [`submitit`](https://github.com/facebookincubator/submitit/) is a Python package designed for submitting your HPC job from your local computer via Python. Note that as this package was developed by Facebook (Meta) primarily for their internal use, it may not be applicable to other HPC systems. I have never tried it myself, but let me know if it works on the NYU HPC. *Thank [Jean-Rémi King](https://kingjr.github.io/) for suggesting this package!*
