@@ -705,6 +705,12 @@ Note that when running an array job with Git commands targeting the same directo
 
 As NYU HPC regularly removes files that have not been accessed for a while, it is important to correctly preserve your data. For projects that have been completed, you should tar the files and deposit them in `/archive` or on your local computer.
 
+You can use this command to check which files have not been accessed, modified, or created in over 60 days.
+```bash
+find $SCRATCH -atime +60 -mtime +60 -ctime +60 -type f
+```
+(You can replace `$SCRATCH` with other roots, and/or replace `+60` with other days.)
+
 However, for projects you are still working on, tarring all the files and then untarring them may not be the best approach. Instead, I wrote a `python` [script](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/touch_files.py) that automatically accesses all the files in a path, which will reset the access time for each file. Note that this approach will only change the files' access time, not the modification time. Additionally, here is a `sbatch` [script](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/touch_python.s) to run the `python` script.
 
 
