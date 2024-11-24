@@ -686,6 +686,39 @@ This new script makes each job instance loop through 1000 iterations per `n`. Wh
 
 Although the execution time per instance is 1000 times longer, the difference is just 0.1 s vs. 100 s. Also, the total queue time and required resources of 100k jobs is almost certainly much longer and larger than 100 jobs!
 
+### How to run a new job after the completion of a previous job?
+
+To start a new job after the completion of a previous job, you can use the `job dependencies` feature in SLURM. This allows you to set up a dependency between jobs, ensuring the subsequent job only starts after the previous one completes successfully.
+
+General Syntax:
+```bash
+sbatch --dependency=<type:job_id[:job_id][,type:job_id[:job_id]]> ...
+```
+
+Example worksflow
+```bash
+[<NetID>@log-3 ~]$ sbatch job1.sh
+Submitted job 3345678
+[<NetID>@log-3 ~]$ sbatch --dependency=afterok:3345678 job2.sh
+```
+In this example:
+- The first job (`job1.sh`) is submitted and assigned job ID `3345678`.
+- The second job (`job2.sh`) is submitted with a dependency on the successful completion (`afterok`) of job `3345678`.
+
+For more details on job dependency types, see the [official documentation](https://slurm.schedmd.com/sbatch.html#OPT_dependency).
+
+### Submitting a job at a specific time
+
+If you need to submit a job to begin at a specific time (note: this specifies the submission time, not the guaranteed execution time), you can use the `--begin` option.
+
+```bash
+[<NetID>@log-3 ~]$ sbatch --begin=9:42:00 job1.sh
+```
+In this example, the job `job1.sh` is scheduled to start at **9:42 AM**. 
+
+Keep in mind that the execution depends on resource availability in the queue system, so actual job start times may vary.
+
+
 ### Can I automatically execute git commands for each job?
 
 Yes, you can. You can use the `subprocess` function to execute your Git commands.
