@@ -586,7 +586,7 @@ cat /scratch/<NetID>/pytorch-example/slurm_output/out_48368654_23.out
 
 ## 7. GPU job ##
 
-### 7.1 Install the right GPU package ###
+### 7-1. Install the right GPU package ###
 
 Before submitting a GPU job, make sure that your package is GPU-compatible, as many Python packages have different versions for GPU and CPU-only usage. For instance, in PyTorch, you need to install:
 ```
@@ -596,7 +596,7 @@ See more [here](https://pytorch.org/get-started/locally/).
 
 **As of Jan 25, 2025, NYU HPC currently only support up to CUDA 12.1**
 
-### 7-1. How to request GPU? ###
+### 7-2. How to request GPU? ###
 
 You can add this line into your `.s` sbatch file:
 ```
@@ -608,7 +608,7 @@ You can add this line into your `.s` sbatch file:
 
 2. **Termination for Low GPU Usage:** NYU HPC may terminate jobs that do not effectively utilize GPUs. This could require trial-and-error to optimize GPU usage, resulting in prolonged queue times for your jobs.
 
-### 7-2. How to monitor GPU usage? ###
+### 7-3. How to monitor GPU usage? ###
 
 When the GPU job is running, use this command to access the job's node:
 
