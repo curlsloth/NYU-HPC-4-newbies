@@ -584,7 +584,73 @@ cat /scratch/<NetID>/pytorch-example/slurm_output/out_48368654_23.out
 # Output: 23 is an odd number
 ```
 
-## 7. Miscellaneous topics ##
+## 7. GPU job ##
+
+### 7.1 Install the right GPU package ###
+
+Before submitting a GPU job, make sure that your package is GPU-compatible, as many Python packages have different versions for GPU and CPU-only usage. For instance, in PyTorch, you need to install:
+```
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+See more [here](https://pytorch.org/get-started/locally/).
+
+**As of Jan 25, 2025, NYU HPC currently only support up to CUDA 12.1**
+
+### 7-1. How to request GPU? ###
+
+You can add this line into your `.s` sbatch file:
+```
+#SBATCH --gres=gpu:2 # requesting 2 GPUs
+```
+**However, unless your job specifically requires GPU usage and you are highly experienced in utilizing it, I do not recommend requesting GPUs for the following reasons:**
+
+1. **Long Queue Times:** Queue times for GPU jobs are typically very long because GPUs are in high demand. Even with the faster computational speed of GPUs, the extended queue times often negate their benefits.
+
+2. **Termination for Low GPU Usage:** NYU HPC may terminate jobs that do not effectively utilize GPUs. This could require trial-and-error to optimize GPU usage, resulting in prolonged queue times for your jobs.
+
+### 7-2. How to monitor GPU usage? ###
+
+When the GPU job is running, use this command to access the job's node:
+
+```bash
+srun --jobid=<JOB_ID> --pty bash
+```
+
+Then use this command to monitor GPU performance in real time.
+
+```bash
+watch -n 1 nvidia-smi
+```
+
+You will see something like this, where the memory usage is 235 MiB / 46080 MiB, and the GPU utilization rate is 20%:
+
+```
+Every 1.0s: nvidia-smi
+
+Sat Jan 25 08:51:54 2025
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.154.05             Driver Version: 535.154.05   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  Quadro RTX 8000                On  | 00000000:D8:00.0 Off |                    0 |
+| N/A   39C    P0              61W / 250W |    235MiB / 46080MiB |     20%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|    0   N/A  N/A   1020293      C   python                                      232MiB |
++---------------------------------------------------------------------------------------+
+```
+
+
+## 8. Miscellaneous topics ##
 
 HPC systems offer a wide range of capabilities. Here, I'll cover the ones I've worked with before.
 
@@ -626,18 +692,6 @@ matlab -nodisplay -r "your_matlab_function($SLURM_ARRAY_TASK_ID); exit;"
 ```
 
 Note that executing a MATLAB script will always return "COMPLETED, ExitCode [0]", regardless of whether it crashed or not. Therefore, make sure to check the SLURM output files for accurate status.
-
-### How to request GPU? ###
-
-You can add this line into your `.s` sbatch file:
-```
-#SBATCH --gres=gpu:2 # requesting 2 GPUs
-```
-However, unless your job specifically requires GPU usage and you are highly experienced in utilizing it, I do not recommend requesting GPUs for the following reasons:
-
-1. **Long Queue Times:** Queue times for GPU jobs are typically very long because GPUs are in high demand. Even with the faster computational speed of GPUs, the extended queue times often negate their benefits.
-
-2. **Termination for Low GPU Usage:** NYU HPC may terminate jobs that do not effectively utilize GPUs. This could require trial-and-error to optimize GPU usage, resulting in prolonged queue times for your jobs.
 
 ### Can I use Jupyter notebook on HPC? ###
 
