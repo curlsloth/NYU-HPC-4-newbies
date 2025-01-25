@@ -812,6 +812,6 @@ I recommend this paper: [Alnasir, J. J. (2021). Fifteen quick tips for success w
 
 Also check out the NYU HPC's website on this topic [here](https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/hpc-storage/best-practices).
 
-## 8. Acknowledgement ##
+## 9. Acknowledgement ##
 
 Shout out to NYU HPC's technical staff. They are knowledgeable, friendly, patient, and very willing to teach me. A huge thanks to them!!
