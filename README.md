@@ -657,7 +657,7 @@ Your GPU job will be cancelled if the utility rate remains too low for an extend
 
 However, optimizing the utility rate can be challenging, requiring extensive trial-and-error, engineering effort, and waiting in the queue. For this reason, I sometimes recommend running jobs on multi-core CPUs as an alternative.
 
-Another hacking strategy is to design your job as a "relay race" so that a cancelled job can be resumed. Most ML toolkits support resuming training from a previous checkpoint. After submitting your first job, use the `--dependency=afternotok:<JobID>` command (see [this guide](https://github.com/curlsloth/NYU-HPC-4-newbies/edit/main/README.md#how-to-run-a-new-job-after-the-completion-of-a-previous-job)) to schedule a follow-up job that runs only if the previous one gets cancelled.  
+Another hacking strategy is to design your job as a "relay race" so that a cancelled job can be resumed. Most ML toolkits support resuming training from a previous checkpoint. After submitting your first job, use the `--dependency=afternotok:<JobID>` command (see [this guide](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/README.md#how-to-run-a-new-job-after-the-completion-of-a-previous-job)) to schedule a follow-up job that runs only if the previous one gets cancelled.  
 
 Additionally, requesting shorter job durations (e.g., 2 hours) can significantly reduce GPU queue times. With this relay strategy, the shorter duration becomes less critical since subsequent jobs will pick up where the cancelled one left off.  
 
