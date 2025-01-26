@@ -648,7 +648,22 @@ Sat Jan 25 08:51:54 2025
 |    0   N/A  N/A   1020293      C   python                                      232MiB |
 +---------------------------------------------------------------------------------------+
 ```
+### 7-4. What if my GPU job kept getting cancelled? ###
 
+Your GPU job will be cancelled if the utility rate remains too low for an extended period (e.g., 2 hours). In pytorch (and most of the neural network models), you can often improve the utility rate by:  
+1. Increasing the batch size,  
+2. Increasing model complexity, and  
+3. Ensuring that data loading is not a bottleneck (see [this guide](https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548)).  
+
+However, optimizing the utility rate can be challenging, requiring extensive trial-and-error, engineering effort, and waiting in the queue. For this reason, I sometimes recommend running jobs on multi-core CPUs as an alternative.
+
+Another hacking strategy is to design your job as a "relay race" so that a cancelled job can be resumed. Most ML toolkits support resuming training from a previous checkpoint. After submitting your first job, use the `--dependency=afternotok:<JobID>` command (see [this guide](https://github.com/curlsloth/NYU-HPC-4-newbies/edit/main/README.md#how-to-run-a-new-job-after-the-completion-of-a-previous-job)) to schedule a follow-up job that runs only if the previous one gets cancelled.  
+
+Additionally, requesting shorter job durations (e.g., 2 hours) can significantly reduce GPU queue times. With this relay strategy, the shorter duration becomes less critical since subsequent jobs will pick up where the cancelled one left off.  
+
+---  
+
+Let me know if you'd like further refinements!
 
 ## 8. Miscellaneous topics ##
 
