@@ -662,10 +662,6 @@ Another hacking strategy is to design your job as a "relay race" so that a cance
 
 Additionally, requesting shorter job durations (e.g., 2 hours) can significantly reduce GPU queue times. With this relay strategy, the shorter duration becomes less critical since subsequent jobs will pick up where the cancelled one left off.  
 
----  
-
-Let me know if you'd like further refinements!
-
 ## 8. Miscellaneous topics ##
 
 HPC systems offer a wide range of capabilities. Here, I'll cover the ones I've worked with before.
@@ -815,6 +811,59 @@ find $SCRATCH -atime +60 -mtime +60 -ctime +60 -type f
 (You can replace `$SCRATCH` with other roots, and/or replace `+60` with other days.)
 
 However, for projects you are still working on, tarring all the files and then untarring them may not be the best approach. Instead, I wrote a `python` [script](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/touch_files.py) that automatically accesses all the files in a path, which will reset the access time for each file. Note that this approach will only change the files' access time, not the modification time. Additionally, here is a `sbatch` [script](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/touch_python.s) to run the `python` script.
+
+
+### How to restore the data from daily snapshots? ###
+
+You can restore the snapshot using the `rsync` command. This will make your current home directory an exact copy of a snapshot.
+
+⚠️ **Warning**: This command will **permanently delete** any files in your current `/home/ac8888` that do not exist in the snapshot.
+
+#### Step-by-Step Restore Guide
+
+1.  **Check Disk Space**
+
+    Since you were out of space before, first confirm you have enough free space. The restore will fail again if the snapshot's contents are larger than your available quota.
+
+    ```bash
+    quota -s
+    ```
+
+    If needed, delete large files from your current home directory to make room.
+
+    ```bash
+    # delete a single file
+    rm my_file_to_delete.txt
+    
+    # delete a folder
+    rm -r my_folder_to_delete
+    ```
+
+3.  **Perform a Dry Run (Safety Check)**
+
+    Run this command first to see what changes will be made without actually doing anything. It's best to run it from outside your home directory (e.g., in `/tmp`).
+
+    ```bash
+    # The -n flag means --dry-run
+    rsync -avhn --delete /home/.snapshots/@GMT-2025.07.10-05.30.55/ac8888/ /home/ac8888/
+    ```
+
+4.  **Execute the Restore**
+
+    If you're satisfied with the dry run's output, run the same command without the `-n` to perform the actual restoration.
+
+    ```bash
+    rsync -avh --delete /home/.snapshots/@GMT-2025.07.10-05.30.55/ac8888/ /home/ac8888/
+    ```
+
+#### Command Explained
+
+  * **`rsync`**: The tool used to synchronize directories.
+  * **`-a`**: Archive mode, preserves permissions, timestamps, etc.
+  * **`-v`**: Verbose mode, shows which files are being copied.
+  * **`-h`**: Human-readable format for file sizes.
+  * **`--delete`**: **Crucial option** that deletes files in your home directory that aren't in the snapshot.
+  * **`...ac8888/`**: The trailing slash on the source is important. It tells `rsync` to copy the *contents* of the snapshot directory.
 
 
 ### Other packages that make HPC even easier ###
