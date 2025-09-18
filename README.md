@@ -812,6 +812,14 @@ find $SCRATCH -atime +60 -mtime +60 -ctime +60 -type f
 
 However, for projects you are still working on, tarring all the files and then untarring them may not be the best approach. Instead, I wrote a `python` [script](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/touch_files.py) that automatically accesses all the files in a path, which will reset the access time for each file. Note that this approach will only change the files' access time, not the modification time. Additionally, here is a `sbatch` [script](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/touch_python.s) to run the `python` script.
 
+#### Command Explained
+
+  * **`rsync`**: The tool used to synchronize directories.
+  * **`-a`**: Archive mode, preserves permissions, timestamps, etc.
+  * **`-v`**: Verbose mode, shows which files are being copied.
+  * **`-h`**: Human-readable format for file sizes.
+  * **`--delete`**: **Crucial option** that deletes files in your home directory that aren't in the snapshot.
+  * **`...ac8888/`**: The trailing slash on the source is important. It tells `rsync` to copy the *contents* of the snapshot directory.
 
 ### How to restore the data from daily snapshots? ###
 
@@ -896,14 +904,7 @@ Successfully updated /Users/andrewchang/.ssh/config!
 > (2) This script will automatically backup your config file as `~/.ssh/config.bak`
 > (3) Update this line if you want more time and/or memory: `job_submission_output=$(ssh ${NETID}@${LOGIN_HOST} 'sbatch --parsable --time=06:00:00 --mem=16GB --wrap "sleep infinity"')`
 
-#### Command Explained
 
-  * **`rsync`**: The tool used to synchronize directories.
-  * **`-a`**: Archive mode, preserves permissions, timestamps, etc.
-  * **`-v`**: Verbose mode, shows which files are being copied.
-  * **`-h`**: Human-readable format for file sizes.
-  * **`--delete`**: **Crucial option** that deletes files in your home directory that aren't in the snapshot.
-  * **`...ac8888/`**: The trailing slash on the source is important. It tells `rsync` to copy the *contents* of the snapshot directory.
 
 ### Other packages that make HPC even easier ###
 
