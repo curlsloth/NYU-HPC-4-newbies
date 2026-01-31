@@ -237,10 +237,12 @@ For the most recent supported versions, refer to the [TensorFlow website](https:
 #### Step 4: Launch the Appropriate Singularity Container in Read/Write Mode (with the `:rw` Flag) ####
 
 ```
-singularity exec --overlay overlay-15GB-500K.ext3:rw /share/apps/images/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
+singularity exec --fakeroot --overlay overlay-15GB-500K.ext3:rw /share/apps/images/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
 ```
 
 The above command starts a bash shell inside the specified Singularity container, overlaid with the 15GB, 500K file system you set up earlier. This setup provides the illusion of having a writable filesystem inside what is typically a read-only Singularity container.
+
+[❗️] Now you have to use the `--fakeroot` flag when you launch your environment in read/write mode
 
 #### Step 5: Inside the Container, Download and Install Miniconda to /ext3/miniconda3 ####
 
