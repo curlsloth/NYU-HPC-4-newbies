@@ -2,13 +2,13 @@
 
 Andrew Chang [ex-Postdoctoral Fellow, Department of Psychology, New York University]
 
-*[Updated Jan 30, 2026]This guideline is currently being revamped following the decommissioning of Greene and the launch of Torch; as such, it is not yet fully updated. While I have moved on from my primary role at NYU, I may continue to update it as time permits, though progress may be slow. I welcome your feedback or error reports. Or please reach out to me if you are interested in co-editing this guideline.*
+*[Updated Jan 30, 2026] This guideline is currently being revamped following the decommissioning of Greene and the launch of Torch; as such, it is not yet fully updated. While I have moved on from my primary role at NYU, I may continue to update it as time permits, though progress may be slow. I welcome your feedback or error reports. Or please reach out to me if you are interested in co-editing this guideline.*
 
-*Some of the updated content is adapted from the MARL Torch Tutorial by Richa Namballa.*
+*Some of the updated content is adapted from the NYU MARL's Torch Tutorial by Richa Namballa.*
 
-![1637077691279](https://github.com/user-attachments/assets/254e2bbd-b710-4e92-ad97-8bc2e52fc1c8)
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/d01d92c8-500b-4c56-a117-a0d533c96814" />
 
-[Source: NYU](https://www.nyu.edu/research/navigating-research-technology/stories/greene-supercomputer-anniversary.html)
+[Source: NYU](https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it.html)
 
 ## 0. Preface ##
 This is a tutorial for computer muggles who want to use NYU's HPC, **"Torch,"** to analyze their data or fit a machine learning model. It also serves as a note for myself and my colleagues. Feel free to distribute it.
