@@ -2,9 +2,7 @@
 
 Andrew Chang [ex-Postdoctoral Fellow, Department of Psychology, New York University]
 
-*[Updated Jan 30, 2026] This guideline is currently being revamped following the decommissioning of Greene and the launch of Torch; as such, it is not yet fully updated. While I have moved on from my primary role at NYU, I may continue to update it as time permits, though progress may be slow. I welcome your feedback or error reports. Or please reach out to me if you are interested in co-editing this guideline.*
-
-*Some of the updated content is adapted from the NYU MARL's Torch Tutorial by Richa Namballa.*
+*[Updated Jan 30, 2026] This guideline is currently being revamped following the decommissioning of Greene and the launch of Torch; as such, it is not yet fully updated. While I have moved on from my primary role at NYU, I may continue to update it as time permits, though progress may be slow. Sections with major updates are marked with [❗️]. I welcome your feedback or error reports. Or please reach out to me if you are interested in co-editing this guideline. Some of the updated content is adapted from the NYU MARL's Torch Tutorial by Richa Namballa.*
 
 <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/d01d92c8-500b-4c56-a117-a0d533c96814" />
 
