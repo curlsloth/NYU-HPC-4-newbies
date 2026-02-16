@@ -875,46 +875,8 @@ You can restore the snapshot using the `rsync` command. This will make your curr
     ```
 
 ### Automating the Setup of NYU HPC Compute Nodes for VS Code Access ###
-While VS Code is a powerful and popular IDE, its resource-intensive nature makes it unsuitable for running directly on the shared login nodes of the Torch HPC cluster. Doing so places a heavy load on these nodes, which are meant for light tasks, and can result in your session being automatically terminated.
 
-NYU's official solution is to connect VS Code to a compute node instead (see [here](https://sites.google.com/nyu.edu/nyu-hpc/training-support/general-hpc-topics/vs-code#h.p_ID_124)). This method works well but has a significant drawback: it requires you to manually edit your local `~/.ssh/config` file every time you are assigned a new compute node. This repetitive process can be tedious and time-consuming.
-
-To streamline this workflow, I've developed a simple script that automates the entire process (prerequisite: you have to set up SSH Keys, see [here](https://sites.google.com/nyu.edu/nyu-hpc/training-support/general-hpc-topics/vs-code?authuser=0)). 
-
-With a single command, the script will:
-
-1. Submit a placeholder Slurm job to reserve a compute node.
-
-2. Wait for the job to start and automatically retrieve the assigned node's name (e.g., cm005).
-
-3. Update your local `~/.ssh/config` file with the new node name.
-
-Simply download the [hpc-connect.sh](https://github.com/curlsloth/NYU-HPC-4-newbies/blob/main/hpc-connect.sh) script and place it in a convenient location, like your home directory (`./`). Then, open your terminal and execute it.
-
-```bash
-./hpc-connect.sh
-```
-
-You'll see output like this, after which you can immediately connect in VS Code:
-
-```
-Step 1: Submitting SLURM 'sleep' job on greene.hpc.nyu.edu...
-Successfully submitted job with ID: 66404830
-
-Step 2: Waiting for the job to be assigned to a compute node...
-...
-Job is running on compute node: cm005
-
-Step 3: Updating your local ~/.ssh/config file...
-Successfully updated /Users/andrewchang/.ssh/config!
-
-✅ All done! You can now connect to your compute node in VSCode using the host: greene-compute
-```
-> Note: (1) Remember to update your NetID `NETID=<NetID>` on line 10.
-> (2) This script will automatically backup your config file as `~/.ssh/config.bak`
-> (3) Update this line if you want more time and/or memory: `job_submission_output=$(ssh ${NETID}@${LOGIN_HOST} 'sbatch --parsable --time=06:00:00 --mem=16GB --wrap "sleep infinity"')`
-
-
+[❗️] Now you can use VS Code to log directly into Torch, just as you would in a terminal. You no longer need to create a compute node to log in.
 
 ### Other packages that make HPC even easier ###
 
