@@ -1,22 +1,25 @@
 # High Performance Computing (HPC) Tutorial for Newbies 🍼 #
 
-Andrew Chang [Postdoctoral Fellow, Department of Psychology, New York University]
+Andrew Chang [ex-Postdoctoral Fellow, Department of Psychology, New York University]
 
-*Please email me (ac8888@nyu.edu) if you have any suggestions and advice, or spot any errors!*
+*[Updated Jan 30, 2026] This guideline is currently being revamped following the decommissioning of Greene and the launch of Torch; as such, it is not yet fully updated. While I have moved on from my primary role at NYU, I may continue to update it as time permits, though progress may be slow. I welcome your feedback or error reports. Or please reach out to me if you are interested in co-editing this guideline.*
 
-![1637077691279](https://github.com/user-attachments/assets/254e2bbd-b710-4e92-ad97-8bc2e52fc1c8)
+*Some of the updated content is adapted from the NYU MARL's Torch Tutorial by Richa Namballa.*
 
-[Source: NYU](https://www.nyu.edu/research/navigating-research-technology/stories/greene-supercomputer-anniversary.html)
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/d01d92c8-500b-4c56-a117-a0d533c96814" />
+
+[Source: NYU](https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it.html)
 
 ## 0. Preface ##
-This is a tutorial for computer muggles who want to use NYU's HPC, **"Greene,"** to analyze their data or fit a machine learning model. It also serves as a note for myself and my colleagues. Feel free to distribute it.
+This is a tutorial for computer muggles who want to use NYU's HPC, **"Torch,"** to analyze their data or fit a machine learning model. It also serves as a note for myself and my colleagues. Feel free to distribute it.
 
 Even though we all know that HPC can speed up our research, I found that most people don't want to use it because they worry that they will spend more time learning HPC than waiting for the computation to be completed on their laptops. This tutorial is designed to give you a quick start. It will help you set up a reliable and replicable HPC environment within one afternoon, even if you are not a computer geek.
 
-**This tutorial is a lean and lay version of [NYU HPC's official website](https://sites.google.com/nyu.edu/nyu-hpc/), integrated with my own recommendations.** This tutorial covers topics related to data science or data analysis workflows. If you are a computer wizard or witch 🧙‍♀️🧙, this is not for you. If you are interested in knowing all the commands and details like Hermione Granger 📚, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC systems may have different OS, this tutorial may not apply to other HPCs. Despite my approaches possibly not being the most efficient or correct way to do things, I hope this tutorial can give you a good start in using HPC and boost your productivity!
+**This tutorial is a lean and lay version of [NYU HPC's official website](https://services.rt.nyu.edu/docs/hpc/getting_started/intro/), integrated with my own recommendations.** This tutorial covers topics related to data science or data analysis workflows. If you are a computer wizard or witch 🧙‍♀️🧙, this is not for you. If you are interested in knowing all the commands and details like Hermione Granger 📚, this is not for you. Some functions and approaches may be outdated when you read it, so make sure that you check out the NYU HPC's official website if you encounter any issues. Also, as different HPC systems may have different OS, this tutorial may not apply to other HPCs. Despite my approaches possibly not being the most efficient or correct way to do things, I hope this tutorial can give you a good start in using HPC and boost your productivity!
 
 ### Prerequisite
-- You have to request a NYU HPC account. See instructions [here](https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it/hpc-accounts-and-eligibility.html).
+- You have to request a NYU HPC account. See instructions [here](https://services.rt.nyu.edu/docs/hpc/getting_started/getting_and_renewing_an_account/).
+- [❗️] Now you need to ask your PI to create an HPC project and also resource allocation. See instructions [here](https://services.rt.nyu.edu/docs/hpc/getting_started/getting_and_renewing_an_account/). Note that the portal can be buggy. Please reach out to the HPC staff if you have encountered any error.
 - Familiar with basic command line commands, such as `cd`, `ls`, `pwd`, `mv`, `rm`, `cat`, `mkdir`. Command line will be the primary way you interact with HPC (see [here](https://www.codecademy.com/article/command-line-commands) for a tutorial).
 - Familiar with `Conda` commands. You will uses them to manage your environment (check out [here](https://docs.anaconda.com/anaconda/getting-started/) for more instructions).
 - You don't have to be familiar with `Git/GitHub` or `Python`, but it will be helpful if you have some experience with them.
@@ -49,13 +52,15 @@ So, I ended up requesting 2000 jobs, each job processing 100 files. As a result,
 
 ## 2. Your first step in using HPC! ##
 
-Open your terminal application [Mac default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.), [PC default](https://learn.microsoft.com/en-us/windows/terminal/) or [iTerm for Mac (recommended)](https://iterm2.com/), connect to the [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into Greene by executing this line (key in and then press enter):
+Open your terminal application [Mac default](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.), [PC default](https://learn.microsoft.com/en-us/windows/terminal/) or [iTerm for Mac (recommended)](https://iterm2.com/), connect to the [NYU VPN](https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html), and log into Torch by executing this line (key in and then press enter):
 
 ```
 ssh <NetID>@gw.hpc.nyu.edu ## you can skip this step if you are on the NYU network or using the NYU VPN
-ssh <NetID>@greene.hpc.nyu.edu
+ssh <NetID>@login.torch.hpc.nyu.edu
 ```
 > **Replace `<NetID>` of this tutorial with your own, such as `ab1234`**
+
+[❗️] You will be requested to do an NYU authentication. You probably want to have [this website](https://microsoft.com/devicelogin) ready in advance as the authentication can time out very fast.
 
 Then enter your password. It should be the same as your NetID password.
 
@@ -68,20 +73,23 @@ If everything is correct, the login node will look something like this:
 
 Your first step is to request a compute node dedicated to serving you. Execute this line:
 ```
-srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash
+sbatch --account=<ProjectID> --cpus-per-task=1 --mem=10GB --time=04:00:00 --wrap "sleep infinity" # wait to be assigned a node then SSH to the node
 ```
-It means that you request the node to have 1 CPU and 10 GB of RAM and serve you for 4 hours. You can change these parameters to whatever you want. **However, the more resources you request, the longer the queue time (depending on how many other jobs and resources were requested by other users).**
+It means that you request the node to have 1 CPU and 10 GB of RAM and serve you for 4 hours. You can change these parameters to whatever you want.
 
-After a short queue, you will see the terminal displaying this:
+This starts a “dummy” job.
+
+After a short queue, you should use the `squeue --me` command to view your job:
 
 ```
-[<NetID>@log-3 ~]$ srun --cpus-per-task=1 --mem=10GB --time=04:00:00 --pty /bin/bash
-srun: job 48347520 queued and waiting for resources
-srun: job 48347520 has been allocated resources
-[<NetID>@cm015 ~]$
+[<NetID>@log-3 ~]$ squeue --me
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           1427572        cs     wrap   ac8888  R      00:02      1 cs785
 ```
 
-Now you have a compute node `cm015` ready to serve you. 
+Now you have a compute node `cs785` ready to serve you. 
+
+Now you use the command `ssh <compute node>` to log into this compute node.
 
 You can start Python by executing this line:
 
@@ -97,13 +105,15 @@ Now you can run any Python commands following `>>>` on HPC the same way as you d
 
 Congratulations! Now you know the core workflow of using HPC. The following sections cover how to streamline the process to make it easier, automatic, replicable, and parallel.
 
-> Note that since Greene is Linux-based, the commands you use will need to be Linux-based as well.
+> Note that since Torch is Linux-based, the commands you use will need to be Linux-based as well.
 
 ## 3. HPC data management ##
 
-### 3-1. Greene storage options ###
+### 3-1. Torch storage options ###
 
-There are several root directories on Greene, each with different specifications tailored for various purposes.
+[❗️] /vast is currently unavailable on Torch. Not sure whether it will be added later.
+
+There are several root directories on Torch, each with different specifications tailored for various purposes.
 
 | Storage   | Disk Space / Number of Files     | Backed Up / Flushed                 | Recommendation                                                                                                                 |
 |-----------|----------------------------------|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
@@ -196,13 +206,13 @@ cd /scratch/<NetID>/pytorch-example    # change the current directory to this pl
 You can browse available images using `ls` to see the options available:
 
 ```
-ls /scratch/work/public/overlay-fs-ext3
+ls /share/apps/overlay-fs-ext3
 ```
 
 In this example, we'll use `overlay-15GB-500K.ext3.gz` as it provides sufficient storage for most Conda environments. It offers 15GB of free space and can hold up to 500K files. You can choose a different size if needed, but remember that the overlay image cannot be easily modified later. It's recommended to select one slightly larger than your current needs.
 
 ```
-cp -rp /scratch/work/public/overlay-fs-ext3/overlay-15GB-500K.ext3.gz .
+cp -rp /share/apps/overlay-fs-ext3/overlay-15GB-500K.ext3.gz .
 gunzip overlay-15GB-500K.ext3.gz
 ```
 
@@ -213,13 +223,13 @@ Choosing a Singularity image is akin to selecting an operating system to run you
 For this example, we will use the following image:
 
 ```
-/scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif
+/share/apps/images/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif
 ```
 
-To view available Singularity images on NYU HPC Greene, you can check the singularity images folder:
+To view available Singularity images on NYU HPC Torch, you can check the singularity images folder:
 
 ```
-ls /scratch/work/public/singularity/
+ls /share/apps/images/
 ```
 
 For the most recent supported versions, refer to the [TensorFlow website](https://www.tensorflow.org/install/pip).
@@ -227,10 +237,12 @@ For the most recent supported versions, refer to the [TensorFlow website](https:
 #### Step 4: Launch the Appropriate Singularity Container in Read/Write Mode (with the `:rw` Flag) ####
 
 ```
-singularity exec --overlay overlay-15GB-500K.ext3:rw /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
+singularity exec --fakeroot --overlay overlay-15GB-500K.ext3:rw /share/apps/images/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
 ```
 
 The above command starts a bash shell inside the specified Singularity container, overlaid with the 15GB, 500K file system you set up earlier. This setup provides the illusion of having a writable filesystem inside what is typically a read-only Singularity container.
+
+[❗️] Now you have to use the `--fakeroot` flag when you launch your environment in read/write mode
 
 #### Step 5: Inside the Container, Download and Install Miniconda to /ext3/miniconda3 ####
 
@@ -310,11 +322,9 @@ You may now install packages into the environment with either the pip install or
 
 First, start an interactive job with adequate compute and memory resources to install packages. The login nodes restrict memory to 2GB per user, which may cause some large packages to crash.
 ```
-srun --cpus-per-task=2 --mem=10GB --time=04:00:00 --pty /bin/bash  # request a compute node
+# SSH to a compute node first, and then execute the line below
 
-# wait to be assigned a node
-
-singularity exec --overlay overlay-15GB-500K.ext3:rw /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
+singularity exec --overlay overlay-15GB-500K.ext3:rw /share/apps/images/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif /bin/bash
 
 source /ext3/env.sh # activate the environment
 ```
@@ -670,7 +680,7 @@ HPC systems offer a wide range of capabilities. Here, I'll cover the ones I've w
 
 HPC systems typically use a module system to load most software into a user’s environment. This approach is particularly useful for tasks involving audio and/or video file processing.
 
-You can use `module avail` to check the available modules on an HPC. On Greene, for example, there are hundreds of modules available.
+You can use `module avail` to check the available modules on an HPC. On Torch, for example, there are hundreds of modules available.
 
 ```
 module avail
@@ -698,7 +708,7 @@ Make a few modifications in your `.sbatch` file right below the `#SBATCH` sectio
 
 ```
 module purge
-module load matlab/2023b # There are many other versions available on Greene you can choose from
+module load matlab/2023b # There are many other versions available on Torch you can choose from
 
 matlab -nodisplay -r "your_matlab_function($SLURM_ARRAY_TASK_ID); exit;"
 ```
@@ -865,7 +875,7 @@ You can restore the snapshot using the `rsync` command. This will make your curr
     ```
 
 ### Automating the Setup of NYU HPC Compute Nodes for VS Code Access ###
-While VS Code is a powerful and popular IDE, its resource-intensive nature makes it unsuitable for running directly on the shared login nodes of the Greene HPC cluster. Doing so places a heavy load on these nodes, which are meant for light tasks, and can result in your session being automatically terminated.
+While VS Code is a powerful and popular IDE, its resource-intensive nature makes it unsuitable for running directly on the shared login nodes of the Torch HPC cluster. Doing so places a heavy load on these nodes, which are meant for light tasks, and can result in your session being automatically terminated.
 
 NYU's official solution is to connect VS Code to a compute node instead (see [here](https://sites.google.com/nyu.edu/nyu-hpc/training-support/general-hpc-topics/vs-code#h.p_ID_124)). This method works well but has a significant drawback: it requires you to manually edit your local `~/.ssh/config` file every time you are assigned a new compute node. This repetitive process can be tedious and time-consuming.
 
